@@ -37,6 +37,21 @@ const FACULTIES_DATA = [
     { id: 'f5', title: 'Farmacia', iconFamily: 'FontAwesome5', iconName: 'prescription-bottle-alt', size: 24 },
 ];
 
+const CAFETERIA_DATA = [
+    { id: 'c1', title: 'Mesas Verdes', iconFamily: 'MaterialCommunityIcons', iconName: 'table-furniture', size: 24 },
+    { id: 'c2', title: 'Pobretin', iconFamily: 'Ionicons', iconName: 'fast-food-outline', size: 24 },
+    { id: 'c3', title: 'Poma', iconFamily: 'Ionicons', iconName: 'pizza-outline', size: 24 },
+    { id: 'c4', title: 'Feria', iconFamily: 'MaterialIcons', iconName: 'storefront', size: 24 },
+    { id: 'c5', title: 'Corner', iconFamily: 'MaterialCommunityIcons', iconName: 'coffee-outline', size: 24 },
+    { id: 'c6', title: 'Usemito', iconFamily: 'MaterialCommunityIcons', iconName: 'ice-cream', size: 24 },
+];
+
+const ENTERTAINMENT_DATA = [
+    { id: 'e1', title: 'Canchas', iconFamily: 'MaterialIcons', iconName: 'sports-soccer', size: 24 },
+    { id: 'e2', title: 'Padelvomito y Pickenosequecosa', iconFamily: 'MaterialCommunityIcons', iconName: 'tennis', size: 24 },
+    { id: 'e3', title: 'Mesas Ping Pong', iconFamily: 'MaterialCommunityIcons', iconName: 'table-tennis', size: 24 },
+];
+
 const MenuItem = ({ item, onPress }) => (
     <TouchableOpacity style={styles.menuItem} onPress={onPress}>
         <View style={styles.menuItemLeft}>
@@ -88,10 +103,17 @@ export default function WebView() {
     };
 
     const handleMenuPress = (item) => {
-        if (item.title === 'Facultades') {
+        if (item.title === 'Facultades' || item.title === 'Cafetería' || item.title === 'Entretenimiento') {
             animateMenuTransition(() => {
                 setSelectedCategory(item);
-                setCurrentMenu('faculties');
+                
+                if (item.title === 'Facultades') {
+                    setCurrentMenu('faculties');
+                } else if (item.title === 'Cafetería') {
+                    setCurrentMenu('cafeteria');
+                } else if (item.title === 'Entretenimiento') {
+                    setCurrentMenu('entertainment');
+                }
                 
                 // Iniciar animación del título
                 titleAnim.setValue(0);
@@ -104,6 +126,7 @@ export default function WebView() {
             });
         } else {
             console.log('Selected:', item.title);
+            // Aquí iría la lógica de navegación futura
         }
     };
 
@@ -209,9 +232,16 @@ export default function WebView() {
                                     </Animated.View>
                                 )}
 
-                                {FACULTIES_DATA.map((item) => (
-                                    <MenuItem key={item.id} item={item} onPress={() => console.log('Facultad:', item.title)} />
-                                ))}
+                                {(() => {
+                                    let data = [];
+                                    if (currentMenu === 'faculties') data = FACULTIES_DATA;
+                                    else if (currentMenu === 'cafeteria') data = CAFETERIA_DATA;
+                                    else if (currentMenu === 'entertainment') data = ENTERTAINMENT_DATA;
+                                    
+                                    return data.map((item) => (
+                                        <MenuItem key={item.id} item={item} onPress={() => console.log('Submenu:', item.title)} />
+                                    ));
+                                })()}
                             </View>
                         )}
                     </Animated.ScrollView>
