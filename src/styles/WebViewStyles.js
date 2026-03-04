@@ -40,8 +40,8 @@ export const styles = StyleSheet.create({
     menuHeader: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: 40,
-        marginTop: 20,
+        marginBottom: 10,
+        marginTop: 0,
         width: '100%',
     },
     headerLogo: {
