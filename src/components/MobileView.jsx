@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, Animated, Platform, TouchableWithoutFeedback, BackHandler } from 'react-native';
-import { useRef, useState, useEffect } from 'react';
+import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, Animated, Platform, TouchableWithoutFeedback, BackHandler, Alert } from 'react-native';
+import { useRef, useState, useEffect, useMemo } from 'react';
 import { MaterialIcons, FontAwesome5, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { styles, DRAWER_HEIGHT } from '../styles/MobileViewStyles';
 import { MENU_DATA, FACULTIES_DATA, CAFETERIA_DATA, ENTERTAINMENT_DATA } from '../data/menuData';
@@ -16,6 +16,67 @@ const renderIcon = (family, name, size) => {
         default:
             return <MaterialIcons name={name} size={size} color="white" />;
     }
+};
+
+const getRegionWithMostNodes = (markers) => {
+    if (!markers || markers.length === 0) return null;
+
+    const CELL_SIZE = 0.0015; // tamaño de celda (aprox), puedes ajustarlo
+    const cells = {};
+
+    markers.forEach((marker) => {
+        const latitude = marker?.coordinate?.latitude ?? marker?.latitude;
+        const longitude = marker?.coordinate?.longitude ?? marker?.longitude;
+
+        if (typeof latitude !== 'number' || typeof longitude !== 'number') return;
+
+        const latCell = Math.floor(latitude / CELL_SIZE);
+        const lngCell = Math.floor(longitude / CELL_SIZE);
+        const key = `${latCell}_${lngCell}`;
+
+        if (!cells[key]) cells[key] = [];
+        cells[key].push({ latitude, longitude });
+    });
+
+    const allKeys = Object.keys(cells);
+    if (allKeys.length === 0) return null;
+
+    // Buscar la celda con más nodos
+    let bestKey = allKeys[0];
+    allKeys.forEach((key) => {
+        if (cells[key].length > cells[bestKey].length) {
+            bestKey = key;
+        }
+    });
+
+    const bestPoints = cells[bestKey];
+
+    // Calcular límites para centrar el mapa
+    let minLat = bestPoints[0].latitude;
+    let maxLat = bestPoints[0].latitude;
+    let minLng = bestPoints[0].longitude;
+    let maxLng = bestPoints[0].longitude;
+
+    bestPoints.forEach((p) => {
+        if (p.latitude < minLat) minLat = p.latitude;
+        if (p.latitude > maxLat) maxLat = p.latitude;
+        if (p.longitude < minLng) minLng = p.longitude;
+        if (p.longitude > maxLng) maxLng = p.longitude;
+    });
+
+    const centerLat = (minLat + maxLat) / 2;
+    const centerLng = (minLng + maxLng) / 2;
+
+       // Ajuste manual del foco (vertical)
+    const LATITUDE_OFFSET = 0.0006;
+
+
+    return {
+        latitude: centerLat + LATITUDE_OFFSET,
+        longitude: centerLng,
+        latitudeDelta: Math.max((maxLat - minLat) * 3, 0.006),
+        longitudeDelta: Math.max((maxLng - minLng) * 3, 0.006),
+    };
 };
 
 const MenuItem = ({ item, onPress }) => (
@@ -35,15 +96,48 @@ export default function MobileView() {
     const [currentMenu, setCurrentMenu] = useState('main'); // 'main' | 'faculties'
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [activeMarkers, setActiveMarkers] = useState(MARKERS_DATA);
+    const [selectedMarkerId, setSelectedMarkerId] = useState(null);
+    const [selectedPlaceName, setSelectedPlaceName] = useState('');
+
+
 
     // Empezamos ocultos abajo del todo
     const slideAnim = useRef(new Animated.Value(0)).current;
+
+    // Región automática: zona con más nodos
+    const focusRegion = useMemo(() => {
+        return getRegionWithMostNodes(activeMarkers);
+    }, [activeMarkers]);
+
+       
+
+
+    const showAlert = () => {
+        Alert.alert('Aún en desarrollo');
+    };
 
     // Animación para el título de la categoría
     const titleAnim = useRef(new Animated.Value(0)).current;
 
     // Animación de transición entre menús (fade/slide)
     const menuTransitionAnim = useRef(new Animated.Value(1)).current;
+
+    const selectMarker = (marker) => {
+        if (!marker) {
+            setSelectedMarkerId(null);
+            setSelectedPlaceName('');
+            return;
+        }
+
+        setSelectedMarkerId(marker.id);
+        setSelectedPlaceName(marker.title);
+    };
+
+    const clearSelectedMarker = () => {
+        setSelectedMarkerId(null);
+        setSelectedPlaceName('');
+        setActiveMarkers(MARKERS_DATA);
+    };
 
     const toggleMenu = () => {
         const toValue = menuOpen ? 0 : 1;
@@ -52,12 +146,13 @@ export default function MobileView() {
             setCurrentMenu('main');
             setSelectedCategory(null);
             menuTransitionAnim.setValue(1);
-            setActiveMarkers(MARKERS_DATA);
         } else {
             setCurrentMenu('main');
             setSelectedCategory(null);
             menuTransitionAnim.setValue(1);
             setActiveMarkers(MARKERS_DATA);
+            setSelectedPlaceName('');
+            setSelectedMarkerId(null);
         }
 
         Animated.spring(slideAnim, {
@@ -101,6 +196,13 @@ export default function MobileView() {
                 const filtered = MARKERS_DATA.filter(m => m.categoryId === item.id);
                 setActiveMarkers(filtered);
 
+                if (filtered.length === 1) {
+                    selectMarker(filtered[0]);
+                } else {
+                    setSelectedPlaceName('');
+                    setSelectedMarkerId(null);
+                }
+
                 // Iniciar animación del título
                 titleAnim.setValue(0);
                 Animated.timing(titleAnim, {
@@ -115,6 +217,14 @@ export default function MobileView() {
             // Si es un ítem principal sin submenú (Ej. Biblioteca), filtramos esos marcadores
             const filtered = MARKERS_DATA.filter(m => m.categoryId === item.id);
             setActiveMarkers(filtered);
+
+            if (filtered.length === 1) {
+                selectMarker(filtered[0]);
+            } else {
+                setSelectedPlaceName('');
+                setSelectedMarkerId(null);
+            }
+
             toggleMenu(); // Opcional: Cerrar el menú al seleccionar
         }
     };
@@ -125,6 +235,8 @@ export default function MobileView() {
                 setCurrentMenu('main');
                 setSelectedCategory(null);
                 setActiveMarkers(MARKERS_DATA); // Return all markers on back
+                setSelectedMarkerId(null);
+                setSelectedPlaceName('');
             });
         }
     };
@@ -165,10 +277,19 @@ export default function MobileView() {
     });
 
     return (
-        <View style={styles.mobileContainer}>
+        
+
+             <View style={styles.mobileContainer}>
             <View style={styles.mapContainer}>
-                <Map markers={activeMarkers} />
+                <Map
+                    markers={activeMarkers}
+                    focusRegion={focusRegion}
+                    selectedMarkerId={selectedMarkerId}
+                    onMarkerPress={(marker) => selectMarker(marker)}
+                />
             </View>
+            {/* ...existing code... */}
+        
 
             <View style={styles.uiOverlay} pointerEvents="box-none">
 
@@ -190,6 +311,45 @@ export default function MobileView() {
                         <MaterialIcons name="menu" size={30} color="white" />
                     </TouchableOpacity>
                 </Animated.View>
+
+                {!!selectedPlaceName && (
+                    <View style={{
+                        position: 'absolute',
+                        top: 50,
+                        left: 16,
+                        right: 16,
+                        zIndex: 55,
+                        backgroundColor: 'rgba(0,0,0,0.75)',
+                        borderRadius: 10,
+                        paddingVertical: 8,
+                        paddingHorizontal: 12,
+                    }}>
+                        <Text style={{ color: 'white', fontWeight: '600', textAlign: 'center' }}>
+                            {selectedPlaceName}
+                        </Text>
+                    </View>
+                )}
+
+                {!!selectedPlaceName && (
+                    <TouchableOpacity
+                        onPress={clearSelectedMarker}
+                        activeOpacity={0.8}
+                        style={{
+                            position: 'absolute',
+                            top: 50,
+                            right: 16,
+                            zIndex: 56,
+                            width: 34,
+                            height: 34,
+                            borderRadius: 17,
+                            backgroundColor: 'rgba(0,0,0,0.8)',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                        }}
+                    >
+                        <MaterialIcons name="close" size={20} color="white" />
+                    </TouchableOpacity>
+                )}
 
                 {/* Bottom Sheet Animado */}
                 <Animated.View style={[styles.menuPanel, { bottom: menuBottom }]}>
@@ -270,6 +430,14 @@ export default function MobileView() {
                                             console.log('Submenu selected:', item.title);
                                             const singleMarkerInfo = MARKERS_DATA.filter(m => m.subItemId === item.id);
                                             setActiveMarkers(singleMarkerInfo);
+
+                                            if (singleMarkerInfo.length > 0) {
+                                                selectMarker(singleMarkerInfo[0]);
+                                            } else {
+                                                setSelectedPlaceName('');
+                                                setSelectedMarkerId(null);
+                                            }
+
                                             toggleMenu(); // Cerrar menú después de elegir sub-ícono para ver el mapa
                                         }} />
                                     ));
@@ -284,12 +452,12 @@ export default function MobileView() {
                                 <MaterialCommunityIcons name="office-building-outline" size={24} color="white" />
                                 <Text style={styles.toggleText}>2D</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity style={styles.toggleButton}>
+                            <TouchableOpacity style={styles.toggleButton} onPress={showAlert}>
                                 <MaterialCommunityIcons name="cube-outline" size={24} color="white" />
                                 <Text style={styles.toggleText}>3D</Text>
                             </TouchableOpacity>
                         </View>
-                        <TouchableOpacity style={styles.settingsButton}>
+                        <TouchableOpacity onPress={showAlert} style={styles.settingsButton}>
                             <Ionicons name="settings-sharp" size={28} color="white" />
                         </TouchableOpacity>
                     </View>
