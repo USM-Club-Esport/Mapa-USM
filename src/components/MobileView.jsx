@@ -163,18 +163,16 @@ export default function MobileView() {
             <View style={styles.uiOverlay} pointerEvents="box-none">
 
                 {/* Fondo oscuro para cerrar al hacer tap fuera */}
-                {menuOpen && (
-                    <TouchableWithoutFeedback onPress={toggleMenu}>
-                        <Animated.View style={[
-                            StyleSheet.absoluteFillObject,
-                            {
-                                backgroundColor: 'rgba(0,0,0,0.3)',
-                                zIndex: 40,
-                                opacity: slideAnim // Se desvanece al unísono con el menú
-                            }
-                        ]} />
-                    </TouchableWithoutFeedback>
-                )}
+                <TouchableWithoutFeedback onPress={menuOpen ? toggleMenu : null}>
+                    <Animated.View style={[
+                        StyleSheet.absoluteFillObject,
+                        {
+                            backgroundColor: 'rgba(0,0,0,0.3)',
+                            zIndex: 40,
+                            opacity: slideAnim // Se desvanece al unísono con el menú
+                        }
+                    ]} pointerEvents={menuOpen ? 'auto' : 'none'} />
+                </TouchableWithoutFeedback>
 
                 {/* Botón flotante para abrir menú móvil (desaparece al abrir) */}
                 <Animated.View style={{ opacity: buttonOpacity, zIndex: 50, position: 'absolute', bottom: 40, right: 20 }} pointerEvents={menuOpen ? 'none' : 'auto'}>

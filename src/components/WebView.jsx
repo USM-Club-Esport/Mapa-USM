@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { Text, View, Image, TouchableOpacity, Animated, ScrollView } from 'react-native';
+import { Text, View, Image, TouchableOpacity, Animated, ScrollView, StyleSheet, TouchableWithoutFeedback } from 'react-native';
 import { styles } from '../styles/WebViewStyles';
 import { useRef, useState } from 'react';
 import { MaterialIcons, FontAwesome5, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
@@ -121,10 +121,27 @@ export default function WebView() {
 
             <View style={styles.uiOverlay} pointerEvents="box-none">
 
+                {/* Fondo clickeable para cerrar el menú en web */}
+                <TouchableWithoutFeedback onPress={menuOpen ? toggleMenu : null}>
+                    <Animated.View style={[
+                        StyleSheet.absoluteFillObject,
+                        {
+                            zIndex: 40,
+                            // En PC web suele ser menos invasivo no oscurecer tanto el mapa, pero lo atenuamos un poco
+                            backgroundColor: 'rgba(0,0,0,0.1)',
+                            opacity: slideAnim,
+                        }
+                    ]} pointerEvents={menuOpen ? 'auto' : 'none'} />
+                </TouchableWithoutFeedback>
+
                 {/* Animated Menu Panel */}
                 <Animated.View style={[styles.menuPanel, { transform: [{ translateX: menuTranslateX }] }]}>
 
-                    <TouchableOpacity style={styles.mapButton} onPress={toggleMenu} activeOpacity={0.8}>
+                    <TouchableOpacity
+                        style={styles.mapButton}
+                        onPress={toggleMenu}
+                        activeOpacity={0.8}
+                    >
                         <MaterialIcons name="location-on" size={38} color="#002B7F" />
                     </TouchableOpacity>
 
