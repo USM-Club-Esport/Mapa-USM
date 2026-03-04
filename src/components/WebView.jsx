@@ -45,6 +45,14 @@ export default function WebView() {
 
     const toggleMenu = () => {
         const toValue = menuOpen ? 0 : 1;
+
+        // Resetear la vista si estamos cerrando
+        if (menuOpen) {
+            setCurrentMenu('main');
+            setSelectedCategory(null);
+            menuTransitionAnim.setValue(1);
+        }
+
         Animated.spring(slideAnim, {
             toValue,
             useNativeDriver: false,

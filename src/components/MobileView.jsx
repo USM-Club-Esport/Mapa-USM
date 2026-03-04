@@ -47,7 +47,10 @@ export default function MobileView() {
     const toggleMenu = () => {
         const toValue = menuOpen ? 0 : 1;
         if (menuOpen) {
-            handleBackToMain(); // Si cerramos el menú, reseteamos el estado interno al principal
+            // Reset state sin animación porque el menú mismo se está ocultando
+            setCurrentMenu('main');
+            setSelectedCategory(null);
+            menuTransitionAnim.setValue(1);
         } else {
             setCurrentMenu('main');
             setSelectedCategory(null);
