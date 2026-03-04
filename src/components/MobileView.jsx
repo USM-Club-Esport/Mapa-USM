@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { Text, View, Image, TouchableOpacity, ScrollView, Animated, Platform } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, Animated, Platform, TouchableWithoutFeedback } from 'react-native';
 import { useRef, useState } from 'react';
 import { MaterialIcons, FontAwesome5, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { styles, DRAWER_HEIGHT } from '../styles/MobileViewStyles';
@@ -79,6 +79,27 @@ export default function MobileView() {
             </View>
 
             <View style={styles.uiOverlay} pointerEvents="box-none">
+
+                {/* Fondo oscuro para cerrar al hacer tap fuera */}
+                {menuOpen && (
+                    <TouchableWithoutFeedback onPress={toggleMenu}>
+                        <Animated.View style={[
+                            StyleSheet.absoluteFillObject,
+                            {
+                                backgroundColor: 'rgba(0,0,0,0.3)',
+                                zIndex: 40,
+                                opacity: slideAnim // Se desvanece al unísono con el menú
+                            }
+                        ]} />
+                    </TouchableWithoutFeedback>
+                )}
+
+                {/* Botón flotante para abrir menú móvil (desaparece al abrir) */}
+                <Animated.View style={{ opacity: buttonOpacity, zIndex: 50, position: 'absolute', bottom: 40, right: 20 }} pointerEvents={menuOpen ? 'none' : 'auto'}>
+                    <TouchableOpacity style={styles.mapButton} onPress={toggleMenu} activeOpacity={0.8}>
+                        <MaterialIcons name="menu" size={30} color="white" />
+                    </TouchableOpacity>
+                </Animated.View>
 
                 {/* Bottom Sheet Animado */}
                 <Animated.View style={[styles.menuPanel, { bottom: menuBottom }]}>
