@@ -24,7 +24,7 @@ export default function App() {
 
   const menuTranslateX = slideAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: [300, -30], // slide out width
+    outputRange: [330, -30], // slide out width
   });
 
   if (isMobileView) {
@@ -56,18 +56,22 @@ export default function App() {
           </TouchableOpacity>
 
           <View style={styles.menuHeader}>
-            <MaterialCommunityIcons name="map-marker-path" size={24} color="white" style={styles.headerIcon} />
+            <Image
+              style={styles.headerLogo}
+              source={require('./assets/logousm/images.png')}
+              resizeMode="contain"
+            />
             <Text style={styles.headerText}>MAPA USEMISTA</Text>
           </View>
 
           <View style={styles.menuItems}>
-            <MenuItem icon={<FontAwesome5 name="graduation-cap" size={20} color="white" />} text="Facultades" />
-            <MenuItem icon={<FontAwesome5 name="university" size={20} color="white" />} text="Administración" />
-            <MenuItem icon={<MaterialIcons name="local-cafe" size={24} color="white" />} text="Cafetería" />
-            <MenuItem icon={<Ionicons name="dice" size={24} color="white" />} text="Entretenimiento" />
-            <MenuItem icon={<FontAwesome5 name="plus-square" size={24} color="white" />} text="Médico" />
-            <MenuItem icon={<MaterialIcons name="menu-book" size={24} color="white" />} text="Biblioteca" />
-            <MenuItem icon={<MaterialIcons name="stadium" size={24} color="white" />} text="Espacio de Eventos" />
+            <MenuItem icon={<FontAwesome5 name="graduation-cap" size={24} color="white" />} text="Facultades" />
+            <MenuItem icon={<FontAwesome5 name="university" size={24} color="white" />} text="Administración" />
+            <MenuItem icon={<MaterialIcons name="local-cafe" size={28} color="white" />} text="Cafetería" />
+            <MenuItem icon={<Ionicons name="dice" size={28} color="white" />} text="Entretenimiento" />
+            <MenuItem icon={<FontAwesome5 name="plus-square" size={28} color="white" />} text="Médico" />
+            <MenuItem icon={<MaterialIcons name="menu-book" size={28} color="white" />} text="Biblioteca" />
+            <MenuItem icon={<MaterialIcons name="stadium" size={28} color="white" />} text="Espacio de Eventos" />
           </View>
 
           <View style={styles.bottomControls}>
@@ -134,10 +138,10 @@ const styles = StyleSheet.create({
   },
   menuPanel: {
     position: 'absolute',
-    right: -50,
+    right: -40,
     top: 0,
     bottom: 0,
-    width: 400,
+    width: 420,
     backgroundColor: '#002B7F',
     borderRadius: 15,
     padding: 30,
@@ -157,14 +161,17 @@ const styles = StyleSheet.create({
     marginBottom: 40,
     marginTop: 20,
   },
-  headerIcon: {
+  headerLogo: {
+    width: 90,
+    height: 90,
     marginRight: 15,
   },
   headerText: {
     color: 'white',
-    fontSize: 18,
-    fontFamily: Platform.OS === 'ios' ? 'San Francisco' : 'Roboto',
-    letterSpacing: 1,
+    fontSize: 22,
+    fontFamily: Platform.OS === 'ios' ? 'Helvetica Neue' : 'serif',
+    letterSpacing: 1.5,
+    fontWeight: 'bold',
   },
   menuItems: {
     flex: 1,
@@ -187,8 +194,9 @@ const styles = StyleSheet.create({
   },
   menuItemText: {
     color: 'white',
-    fontSize: 16,
+    fontSize: 18,
     marginLeft: 15,
+    fontWeight: '500',
   },
   bottomControls: {
     flexDirection: 'row',
