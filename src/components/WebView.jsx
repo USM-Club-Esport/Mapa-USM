@@ -1,15 +1,41 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Platform, Image, TouchableOpacity, Animated } from 'react-native';
+import { Text, View, Image, TouchableOpacity, Animated, ScrollView } from 'react-native';
+import { styles } from '../styles/WebViewStyles';
 import { useRef, useState } from 'react';
 import { MaterialIcons, FontAwesome5, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 
 const imgMap = "https://www.figma.com/api/mcp/asset/1d8b71c8-52a7-4067-8fa5-75d51b43247a";
 
-const MenuItem = ({ icon, text }) => (
+// Este JSON simula lo que vendría de tu base de datos en el futuro
+const MENU_DATA = [
+    { id: '1', title: 'Facultades', iconFamily: 'FontAwesome5', iconName: 'graduation-cap', size: 28 },
+    { id: '2', title: 'Administración', iconFamily: 'FontAwesome5', iconName: 'university', size: 28 },
+    { id: '3', title: 'Cafetería', iconFamily: 'MaterialIcons', iconName: 'local-cafe', size: 28 },
+    { id: '4', title: 'Entretenimiento', iconFamily: 'Ionicons', iconName: 'dice', size: 28 },
+    { id: '5', title: 'Médico', iconFamily: 'FontAwesome5', iconName: 'plus-square', size: 28 },
+    { id: '6', title: 'Biblioteca', iconFamily: 'MaterialIcons', iconName: 'menu-book', size: 28 },
+    { id: '7', title: 'Espacio de Eventos', iconFamily: 'MaterialIcons', iconName: 'stadium', size: 28 },
+];
+
+// Helper para renderizar el icono correcto según la familia
+const renderIcon = (family, name, size) => {
+    switch (family) {
+        case 'FontAwesome5': return <FontAwesome5 name={name} size={size} color="white" />;
+        case 'Ionicons': return <Ionicons name={name} size={size} color="white" />;
+        case 'MaterialCommunityIcons': return <MaterialCommunityIcons name={name} size={size} color="white" />;
+        case 'MaterialIcons':
+        default:
+            return <MaterialIcons name={name} size={size} color="white" />;
+    }
+};
+
+const MenuItem = ({ item }) => (
     <TouchableOpacity style={styles.menuItem}>
         <View style={styles.menuItemLeft}>
-            <View style={styles.menuIconContainer}>{icon}</View>
-            <Text style={styles.menuItemText}>{text}</Text>
+            <View style={styles.menuIconContainer}>
+                {renderIcon(item.iconFamily, item.iconName, item.size)}
+            </View>
+            <Text style={styles.menuItemText}>{item.title}</Text>
         </View>
         <MaterialIcons name="chevron-right" size={24} color="#88aadd" />
     </TouchableOpacity>
@@ -63,15 +89,11 @@ export default function WebView() {
                         <Text style={styles.headerText}>MAPA USEMISTA</Text>
                     </View>
 
-                    <View style={styles.menuItems}>
-                        <MenuItem icon={<FontAwesome5 name="graduation-cap" size={24} color="white" />} text="Facultades" />
-                        <MenuItem icon={<FontAwesome5 name="university" size={24} color="white" />} text="Administración" />
-                        <MenuItem icon={<MaterialIcons name="local-cafe" size={28} color="white" />} text="Cafetería" />
-                        <MenuItem icon={<Ionicons name="dice" size={28} color="white" />} text="Entretenimiento" />
-                        <MenuItem icon={<FontAwesome5 name="plus-square" size={28} color="white" />} text="Médico" />
-                        <MenuItem icon={<MaterialIcons name="menu-book" size={28} color="white" />} text="Biblioteca" />
-                        <MenuItem icon={<MaterialIcons name="stadium" size={28} color="white" />} text="Espacio de Eventos" />
-                    </View>
+                    <ScrollView style={styles.menuItems} showsVerticalScrollIndicator={false}>
+                        {MENU_DATA.map((item) => (
+                            <MenuItem key={item.id} item={item} />
+                        ))}
+                    </ScrollView>
 
                     <View style={styles.bottomControls}>
                         <View style={styles.toggleContainer}>
@@ -96,137 +118,3 @@ export default function WebView() {
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    webContainer: {
-        flex: 1,
-        width: '100%',
-        height: '100vh',
-        overflow: 'hidden',
-        backgroundColor: '#fff',
-    },
-    mapContainer: {
-        ...StyleSheet.absoluteFillObject,
-    },
-    uiOverlay: {
-        ...StyleSheet.absoluteFillObject,
-        flexDirection: 'row',
-        justifyContent: 'flex-end',
-        pointerEvents: 'box-none',
-    },
-    menuPanel: {
-        position: 'absolute',
-        right: -40,
-        top: 0,
-        bottom: 0,
-        width: 420,
-        backgroundColor: '#002B7F',
-        borderRadius: 15,
-        padding: 30,
-        elevation: 8,
-        shadowColor: '#000',
-        shadowOpacity: 0.3,
-        shadowOffset: { width: -3, height: 0 },
-        shadowRadius: 10,
-        borderWidth: 1,
-        borderColor: '#4CA1E7',
-        zIndex: 1000,
-        paddingLeft: 60,
-    },
-    menuHeader: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: 40,
-        marginTop: 20,
-    },
-    headerLogo: {
-        width: 90,
-        height: 90,
-        marginRight: 15,
-    },
-    headerText: {
-        color: 'white',
-        fontSize: 22,
-        fontFamily: Platform.OS === 'ios' ? 'Helvetica Neue' : 'serif',
-        letterSpacing: 1.5,
-        fontWeight: 'bold',
-    },
-    menuItems: {
-        flex: 1,
-    },
-    menuItem: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        paddingVertical: 15,
-        borderBottomWidth: 1,
-        borderBottomColor: 'rgba(255,255,255,0.05)',
-    },
-    menuItemLeft: {
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    menuIconContainer: {
-        width: 40,
-        alignItems: 'center',
-    },
-    menuItemText: {
-        color: 'white',
-        fontSize: 18,
-        marginLeft: 15,
-        fontWeight: '500',
-    },
-    bottomControls: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        marginTop: 'auto',
-        marginBottom: 10,
-    },
-    toggleContainer: {
-        flexDirection: 'row',
-        backgroundColor: 'rgba(255,255,255,0.1)',
-        borderRadius: 20,
-        overflow: 'hidden',
-        borderWidth: 1,
-        borderColor: 'rgba(255,255,255,0.2)',
-    },
-    toggleButton: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        paddingVertical: 8,
-        paddingHorizontal: 16,
-    },
-    toggleActive: {
-        backgroundColor: '#60A5FA', // Light blue active state
-    },
-    toggleText: {
-        color: 'white',
-        marginLeft: 6,
-        fontWeight: '500',
-    },
-    settingsButton: {
-        padding: 10,
-    },
-    mapButton: {
-        position: 'absolute',
-        left: -35,
-        bottom: 40,
-        width: 70,
-        height: 70,
-        zIndex: 10,
-        backgroundColor: 'white',
-        borderRadius: 35,
-        alignItems: 'center',
-        justifyContent: 'center',
-        elevation: 6,
-        shadowColor: '#000',
-        shadowOpacity: 0.3,
-        shadowOffset: { width: -2, height: 2 },
-        shadowRadius: 6,
-    },
-    fullImage: {
-        width: '100%',
-        height: '100%',
-    },
-});
