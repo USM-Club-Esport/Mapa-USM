@@ -3,19 +3,9 @@ import { Text, View, Image, TouchableOpacity, Animated, ScrollView } from 'react
 import { styles } from '../styles/WebViewStyles';
 import { useRef, useState } from 'react';
 import { MaterialIcons, FontAwesome5, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { MENU_DATA, FACULTIES_DATA, CAFETERIA_DATA, ENTERTAINMENT_DATA } from '../data/menuData';
 
 const imgMap = "https://www.figma.com/api/mcp/asset/1d8b71c8-52a7-4067-8fa5-75d51b43247a";
-
-// Este JSON simula lo que vendría de tu base de datos en el futuro
-const MENU_DATA = [
-    { id: '1', title: 'Facultades', iconFamily: 'FontAwesome5', iconName: 'graduation-cap', size: 28 },
-    { id: '2', title: 'Administración', iconFamily: 'FontAwesome5', iconName: 'university', size: 28 },
-    { id: '3', title: 'Cafetería', iconFamily: 'MaterialIcons', iconName: 'local-cafe', size: 28 },
-    { id: '4', title: 'Entretenimiento', iconFamily: 'Ionicons', iconName: 'dice', size: 28 },
-    { id: '5', title: 'Médico', iconFamily: 'FontAwesome5', iconName: 'plus-square', size: 28 },
-    { id: '6', title: 'Biblioteca', iconFamily: 'MaterialIcons', iconName: 'menu-book', size: 28 },
-    { id: '7', title: 'Espacio de Eventos', iconFamily: 'MaterialIcons', iconName: 'stadium', size: 28 },
-];
 
 // Helper para renderizar el icono correcto según la familia
 const renderIcon = (family, name, size) => {
@@ -28,29 +18,6 @@ const renderIcon = (family, name, size) => {
             return <MaterialIcons name={name} size={size} color="white" />;
     }
 };
-
-const FACULTIES_DATA = [
-    { id: 'f1', title: 'Ciencias Económicas y Sociales', iconFamily: 'FontAwesome5', iconName: 'chart-line', size: 24 },
-    { id: 'f2', title: 'Derecho', iconFamily: 'FontAwesome5', iconName: 'balance-scale', size: 24 },
-    { id: 'f3', title: 'Estudios Internacionales', iconFamily: 'FontAwesome5', iconName: 'globe-americas', size: 24 },
-    { id: 'f4', title: 'Ingeniería y Arquitectura', iconFamily: 'FontAwesome5', iconName: 'drafting-compass', size: 24 },
-    { id: 'f5', title: 'Farmacia', iconFamily: 'FontAwesome5', iconName: 'prescription-bottle-alt', size: 24 },
-];
-
-const CAFETERIA_DATA = [
-    { id: 'c1', title: 'Mesas Verdes', iconFamily: 'MaterialCommunityIcons', iconName: 'table-furniture', size: 24 },
-    { id: 'c2', title: 'Pobretin', iconFamily: 'Ionicons', iconName: 'fast-food-outline', size: 24 },
-    { id: 'c3', title: 'Poma', iconFamily: 'Ionicons', iconName: 'pizza-outline', size: 24 },
-    { id: 'c4', title: 'Feria', iconFamily: 'MaterialIcons', iconName: 'storefront', size: 24 },
-    { id: 'c5', title: 'Corner', iconFamily: 'MaterialCommunityIcons', iconName: 'coffee-outline', size: 24 },
-    { id: 'c6', title: 'Usemito', iconFamily: 'MaterialCommunityIcons', iconName: 'ice-cream', size: 24 },
-];
-
-const ENTERTAINMENT_DATA = [
-    { id: 'e1', title: 'Canchas', iconFamily: 'MaterialIcons', iconName: 'sports-soccer', size: 24 },
-    { id: 'e2', title: 'Padelvomito y Pickenosequecosa', iconFamily: 'MaterialCommunityIcons', iconName: 'tennis', size: 24 },
-    { id: 'e3', title: 'Mesas Ping Pong', iconFamily: 'MaterialCommunityIcons', iconName: 'table-tennis', size: 24 },
-];
 
 const MenuItem = ({ item, onPress }) => (
     <TouchableOpacity style={styles.menuItem} onPress={onPress}>
@@ -69,10 +36,10 @@ export default function WebView() {
     const [currentMenu, setCurrentMenu] = useState('main'); // 'main' | 'faculties'
     const [selectedCategory, setSelectedCategory] = useState(null);
     const slideAnim = useRef(new Animated.Value(0)).current;
-    
+
     // Animación para el título de la categoría
     const titleAnim = useRef(new Animated.Value(0)).current;
-    
+
     // Animación de transición entre menús (fade/slide)
     const menuTransitionAnim = useRef(new Animated.Value(1)).current;
 
@@ -106,7 +73,7 @@ export default function WebView() {
         if (item.title === 'Facultades' || item.title === 'Cafetería' || item.title === 'Entretenimiento') {
             animateMenuTransition(() => {
                 setSelectedCategory(item);
-                
+
                 if (item.title === 'Facultades') {
                     setCurrentMenu('faculties');
                 } else if (item.title === 'Cafetería') {
@@ -114,7 +81,7 @@ export default function WebView() {
                 } else if (item.title === 'Entretenimiento') {
                     setCurrentMenu('entertainment');
                 }
-                
+
                 // Iniciar animación del título
                 titleAnim.setValue(0);
                 Animated.timing(titleAnim, {
@@ -162,19 +129,19 @@ export default function WebView() {
                     </TouchableOpacity>
 
                     {currentMenu !== 'main' && (
-                        <TouchableOpacity 
+                        <TouchableOpacity
                             style={[
-                                styles.mapButton, 
-                                { 
-                                    top: 160, 
-                                    bottom: undefined, 
-                                    width: 50, 
-                                    height: 50, 
-                                    borderRadius: 25, 
-                                    left: -25 
+                                styles.mapButton,
+                                {
+                                    top: 160,
+                                    bottom: undefined,
+                                    width: 50,
+                                    height: 50,
+                                    borderRadius: 25,
+                                    left: -25
                                 }
-                            ]} 
-                            onPress={handleBackToMain} 
+                            ]}
+                            onPress={handleBackToMain}
                             activeOpacity={0.8}
                         >
                             <MaterialIcons name="arrow-back" size={24} color="#002B7F" />
@@ -190,8 +157,8 @@ export default function WebView() {
                         <Text style={styles.headerText}>MAPA USEMISTA</Text>
                     </View>
 
-                    <Animated.ScrollView 
-                        style={[styles.menuItems, { 
+                    <Animated.ScrollView
+                        style={[styles.menuItems, {
                             opacity: menuTransitionAnim,
                             transform: [{
                                 translateX: menuTransitionAnim.interpolate({
@@ -199,7 +166,7 @@ export default function WebView() {
                                     outputRange: [20, 0] // Pequeño desplazamiento al aparecer
                                 })
                             }]
-                        }]} 
+                        }]}
                         showsVerticalScrollIndicator={false}
                     >
                         {currentMenu === 'main' ? (
@@ -219,10 +186,10 @@ export default function WebView() {
                                         ]
                                     }}>
                                         {renderIcon(selectedCategory.iconFamily, selectedCategory.iconName, 40)}
-                                        <Text style={{ 
-                                            color: 'white', 
-                                            fontSize: 22, 
-                                            fontWeight: 'bold', 
+                                        <Text style={{
+                                            color: 'white',
+                                            fontSize: 22,
+                                            fontWeight: 'bold',
                                             marginTop: 8,
                                             marginBottom: 5
                                         }}>
@@ -237,7 +204,7 @@ export default function WebView() {
                                     if (currentMenu === 'faculties') data = FACULTIES_DATA;
                                     else if (currentMenu === 'cafeteria') data = CAFETERIA_DATA;
                                     else if (currentMenu === 'entertainment') data = ENTERTAINMENT_DATA;
-                                    
+
                                     return data.map((item) => (
                                         <MenuItem key={item.id} item={item} onPress={() => console.log('Submenu:', item.title)} />
                                     ));

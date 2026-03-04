@@ -3,27 +3,9 @@ import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, Animated, 
 import { useRef, useState, useEffect } from 'react';
 import { MaterialIcons, FontAwesome5, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { styles, DRAWER_HEIGHT } from '../styles/MobileViewStyles';
+import { MENU_DATA, FACULTIES_DATA, CAFETERIA_DATA, ENTERTAINMENT_DATA } from '../data/menuData';
 
 const imgMap = "https://www.figma.com/api/mcp/asset/1d8b71c8-52a7-4067-8fa5-75d51b43247a";
-
-// Mismo JSON de datos
-const MENU_DATA = [
-    { id: '1', title: 'Facultades', iconFamily: 'FontAwesome5', iconName: 'graduation-cap', size: 28 },
-    { id: '2', title: 'Administración', iconFamily: 'FontAwesome5', iconName: 'university', size: 28 },
-    { id: '3', title: 'Cafetería', iconFamily: 'MaterialIcons', iconName: 'local-cafe', size: 28 },
-    { id: '4', title: 'Entretenimiento', iconFamily: 'Ionicons', iconName: 'dice', size: 28 },
-    { id: '5', title: 'Médico', iconFamily: 'FontAwesome5', iconName: 'plus-square', size: 28 },
-    { id: '6', title: 'Biblioteca', iconFamily: 'MaterialIcons', iconName: 'menu-book', size: 28 },
-    { id: '7', title: 'Espacio de Eventos', iconFamily: 'MaterialIcons', iconName: 'stadium', size: 28 },
-];
-
-const FACULTIES_DATA = [
-    { id: 'f1', title: 'Ciencias Económicas y Sociales', iconFamily: 'FontAwesome5', iconName: 'chart-line', size: 24 },
-    { id: 'f2', title: 'Derecho', iconFamily: 'FontAwesome5', iconName: 'balance-scale', size: 24 },
-    { id: 'f3', title: 'Estudios Internacionales', iconFamily: 'FontAwesome5', iconName: 'globe-americas', size: 24 },
-    { id: 'f4', title: 'Ingeniería y Arquitectura', iconFamily: 'FontAwesome5', iconName: 'drafting-compass', size: 24 },
-    { id: 'f5', title: 'Farmacia', iconFamily: 'FontAwesome5', iconName: 'prescription-bottle-alt', size: 24 },
-];
 
 const renderIcon = (family, name, size) => {
     switch (family) {
@@ -97,10 +79,17 @@ export default function MobileView() {
     };
 
     const handleMenuPress = (item) => {
-        if (item.title === 'Facultades') {
+        if (item.title === 'Facultades' || item.title === 'Cafetería' || item.title === 'Entretenimiento') {
             animateMenuTransition(() => {
                 setSelectedCategory(item);
-                setCurrentMenu('faculties');
+
+                if (item.title === 'Facultades') {
+                    setCurrentMenu('faculties');
+                } else if (item.title === 'Cafetería') {
+                    setCurrentMenu('cafeteria');
+                } else if (item.title === 'Entretenimiento') {
+                    setCurrentMenu('entertainment');
+                }
 
                 // Iniciar animación del título
                 titleAnim.setValue(0);
@@ -113,6 +102,7 @@ export default function MobileView() {
             });
         } else {
             console.log('Selected:', item.title);
+            // Aquí iría la lógica de navegación futura
         }
     };
 
@@ -261,9 +251,16 @@ export default function MobileView() {
                                     </Animated.View>
                                 )}
 
-                                {FACULTIES_DATA.map((item) => (
-                                    <MenuItem key={item.id} item={item} onPress={() => console.log('Facultad:', item.title)} />
-                                ))}
+                                {(() => {
+                                    let data = [];
+                                    if (currentMenu === 'faculties') data = FACULTIES_DATA;
+                                    else if (currentMenu === 'cafeteria') data = CAFETERIA_DATA;
+                                    else if (currentMenu === 'entertainment') data = ENTERTAINMENT_DATA;
+
+                                    return data.map((item) => (
+                                        <MenuItem key={item.id} item={item} onPress={() => console.log('Submenu:', item.title)} />
+                                    ));
+                                })()}
                             </View>
                         )}
                     </Animated.ScrollView>
