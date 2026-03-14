@@ -6,6 +6,7 @@ import { styles, DRAWER_HEIGHT } from '../styles/MobileViewStyles';
 import { MENU_DATA, FACULTIES_DATA, CAFETERIA_DATA, ENTERTAINMENT_DATA } from '../data/menuData';
 import { MARKERS_DATA } from '../data/markersData';
 import Map from './Map';
+import Map3D from './Map3D';
 
 const renderIcon = (family, name, size) => {
     switch (family) {
@@ -92,6 +93,7 @@ const MenuItem = ({ item, onPress }) => (
 );
 
 export default function MobileView() {
+    const [is3D, setIs3D] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
     const [currentMenu, setCurrentMenu] = useState('main'); // 'main' | 'faculties'
     const [selectedCategory, setSelectedCategory] = useState(null);
@@ -281,12 +283,16 @@ export default function MobileView() {
 
              <View style={styles.mobileContainer}>
             <View style={styles.mapContainer}>
-                <Map
-                    markers={activeMarkers}
-                    focusRegion={focusRegion}
-                    selectedMarkerId={selectedMarkerId}
-                    onMarkerPress={(marker) => selectMarker(marker)}
-                />
+                {is3D ? (
+                    <Map3D />
+                ) : (
+                    <Map
+                        markers={activeMarkers}
+                        focusRegion={focusRegion}
+                        selectedMarkerId={selectedMarkerId}
+                        onMarkerPress={(marker) => selectMarker(marker)}
+                    />
+                )}
             </View>
             {/* ...existing code... */}
         
@@ -448,11 +454,17 @@ export default function MobileView() {
 
                     <View style={styles.bottomControls}>
                         <View style={styles.toggleContainer}>
-                            <TouchableOpacity style={[styles.toggleButton, styles.toggleActive]}>
+                            <TouchableOpacity 
+                                style={!is3D ? [styles.toggleButton, styles.toggleActive] : styles.toggleButton} 
+                                onPress={() => setIs3D(false)}
+                            >
                                 <MaterialCommunityIcons name="office-building-outline" size={24} color="white" />
                                 <Text style={styles.toggleText}>2D</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity style={styles.toggleButton} onPress={showAlert}>
+                            <TouchableOpacity 
+                                style={is3D ? [styles.toggleButton, styles.toggleActive] : styles.toggleButton} 
+                                onPress={() => setIs3D(true)}
+                            >
                                 <MaterialCommunityIcons name="cube-outline" size={24} color="white" />
                                 <Text style={styles.toggleText}>3D</Text>
                             </TouchableOpacity>
