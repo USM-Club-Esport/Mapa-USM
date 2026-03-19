@@ -6,7 +6,6 @@ import { MaterialIcons, FontAwesome5, Ionicons, MaterialCommunityIcons } from '@
 import { MENU_DATA, FACULTIES_DATA, CAFETERIA_DATA, ENTERTAINMENT_DATA } from '../data/menuData';
 import { MARKERS_DATA } from '../data/markersData';
 import Map from './Map';
-import Map3D from './Map3D';
 
 // Helper para renderizar el icono correcto según la familia
 const renderIcon = (family, name, size) => {
@@ -33,7 +32,6 @@ const MenuItem = ({ item, onPress }) => (
 );
 
 export default function WebView() {
-    const [is3D, setIs3D] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
     const [currentMenu, setCurrentMenu] = useState('main'); // 'main' | 'faculties'
     const [selectedCategory, setSelectedCategory] = useState(null);
@@ -132,7 +130,7 @@ export default function WebView() {
     return (
         <View style={styles.webContainer}>
             <View style={styles.mapContainer}>
-                {is3D ? <Map3D /> : <Map markers={activeMarkers} />}
+                <Map markers={activeMarkers} />
             </View>
 
             <View style={styles.uiOverlay} pointerEvents="box-none">
@@ -253,17 +251,11 @@ export default function WebView() {
 
                     <View style={styles.bottomControls}>
                         <View style={styles.toggleContainer}>
-                            <TouchableOpacity 
-                                style={!is3D ? [styles.toggleButton, styles.toggleActive] : styles.toggleButton} 
-                                onPress={() => setIs3D(false)}
-                            >
+                            <TouchableOpacity style={[styles.toggleButton, styles.toggleActive]}>
                                 <MaterialCommunityIcons name="office-building-outline" size={24} color="white" />
                                 <Text style={styles.toggleText}>2D</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity 
-                                style={is3D ? [styles.toggleButton, styles.toggleActive] : styles.toggleButton} 
-                                onPress={() => setIs3D(true)}
-                            >
+                            <TouchableOpacity style={styles.toggleButton}>
                                 <MaterialCommunityIcons name="cube-outline" size={24} color="white" />
                                 <Text style={styles.toggleText}>3D</Text>
                             </TouchableOpacity>

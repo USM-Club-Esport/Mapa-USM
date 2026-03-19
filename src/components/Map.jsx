@@ -6,8 +6,8 @@ import Svg, { Path, G } from 'react-native-svg';
 const INITIAL_REGION = {
     latitude: 10.4912244,
     longitude: -66.7805869,
-    latitudeDelta: 0.01,
-    longitudeDelta: 0.01,
+    latitudeDelta: 0.0035,
+    longitudeDelta: 0.0035,
 };
 
 export default function Map({ markers = [], focusRegion = null, selectedMarkerId = null, onMarkerPress }) {
@@ -38,8 +38,8 @@ export default function Map({ markers = [], focusRegion = null, selectedMarkerId
             {
                 latitude: marker.latitude,
                 longitude: marker.longitude,
-                latitudeDelta: 0.006,
-                longitudeDelta: 0.006,
+                latitudeDelta: 0.0025,
+                longitudeDelta: 0.0025,
             },
             500
         );

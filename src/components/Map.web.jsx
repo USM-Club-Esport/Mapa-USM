@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 const INITIAL_CENTER = [10.4912244, -66.7805869];
-const INITIAL_ZOOM = 15;
+const INITIAL_ZOOM = 20;
 
 export default function Map({ markers = [] }) {
     const [isMounted, setIsMounted] = useState(false);
