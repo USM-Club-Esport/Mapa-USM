@@ -34,7 +34,7 @@ export const MARKERS_DATA = [
         longitude: -66.7820,
         address: 'Por definir',
         departments: ['Coordinación en 213', 'Decanato en 223'],
-        modules: ['1','2'],
+        modules: ['1','2','3'],
     },
     {
         id: 'm3',
