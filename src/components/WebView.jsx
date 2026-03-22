@@ -2,52 +2,29 @@ import { StatusBar } from 'expo-status-bar';
 import { Text, View, Image, TouchableOpacity, Animated, ScrollView, StyleSheet, TouchableWithoutFeedback } from 'react-native';
 import { styles } from '../styles/WebViewStyles';
 import { useRef, useState } from 'react';
-import { MaterialIcons, FontAwesome5, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
 import { MENU_DATA, FACULTIES_DATA, CAFETERIA_DATA, ENTERTAINMENT_DATA } from '../data/menuData';
 import { MARKERS_DATA } from '../data/markersData';
 import Map from './Map';
 
-// Helper para renderizar el icono correcto según la familia
-const renderIcon = (family, name, size) => {
-    switch (family) {
-        case 'FontAwesome5': return <FontAwesome5 name={name} size={size} color="white" />;
-        case 'Ionicons': return <Ionicons name={name} size={size} color="white" />;
-        case 'MaterialCommunityIcons': return <MaterialCommunityIcons name={name} size={size} color="white" />;
-        case 'MaterialIcons':
-        default:
-            return <MaterialIcons name={name} size={size} color="white" />;
-    }
-};
-
-const MenuItem = ({ item, onPress }) => (
-    <TouchableOpacity style={styles.menuItem} onPress={onPress}>
-        <View style={styles.menuItemLeft}>
-            <View style={styles.menuIconContainer}>
-                {renderIcon(item.iconFamily, item.iconName, item.size)}
-            </View>
-            <Text style={styles.menuItemText}>{item.title}</Text>
-        </View>
-        <MaterialIcons name="chevron-right" size={24} color="#88aadd" />
-    </TouchableOpacity>
-);
+// Extracted UI Components
+import { MenuItem } from './ui/MenuItem';
+import { BottomControls } from './ui/BottomControls';
+import { SidebarMenu } from './mobile/SidebarMenu'; // We share this with the mobile side exactly!
 
 export default function WebView() {
     const [menuOpen, setMenuOpen] = useState(false);
     const [currentMenu, setCurrentMenu] = useState('main'); // 'main' | 'faculties'
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [activeMarkers, setActiveMarkers] = useState(MARKERS_DATA);
+    
     const slideAnim = useRef(new Animated.Value(0)).current;
-
-    // Animación para el título de la categoría
     const titleAnim = useRef(new Animated.Value(0)).current;
-
-    // Animación de transición entre menús (fade/slide)
     const menuTransitionAnim = useRef(new Animated.Value(1)).current;
 
     const toggleMenu = () => {
         const toValue = menuOpen ? 0 : 1;
 
-        // Resetear la vista si estamos cerrando
         if (menuOpen) {
             setCurrentMenu('main');
             setSelectedCategory(null);
@@ -84,48 +61,52 @@ export default function WebView() {
             animateMenuTransition(() => {
                 setSelectedCategory(item);
 
-                if (item.title === 'Facultades') {
-                    setCurrentMenu('faculties');
-                } else if (item.title === 'Cafetería') {
-                    setCurrentMenu('cafeteria');
-                } else if (item.title === 'Entretenimiento') {
-                    setCurrentMenu('entertainment');
-                }
+                if (item.title === 'Facultades') setCurrentMenu('faculties');
+                else if (item.title === 'Cafetería') setCurrentMenu('cafeteria');
+                else if (item.title === 'Entretenimiento') setCurrentMenu('entertainment');
 
-                // Filter markers by category
                 const filtered = MARKERS_DATA.filter(m => m.categoryId === item.id);
                 setActiveMarkers(filtered);
 
-                // Iniciar animación del título
                 titleAnim.setValue(0);
                 Animated.timing(titleAnim, {
                     toValue: 1,
                     duration: 400,
                     useNativeDriver: true,
-                    delay: 100 // Un pequeño delay para que entre después del fade in general
+                    delay: 100
                 }).start();
             });
         } else {
             console.log('Selected Main Item:', item.title);
-            // Si es un ítem principal sin submenú (Ej. Biblioteca), filtramos esos marcadores
             const filtered = MARKERS_DATA.filter(m => m.categoryId === item.id);
             setActiveMarkers(filtered);
-            toggleMenu(); // Opcional: Cerrar el menú al seleccionar
+            toggleMenu(); 
         }
+    };
+
+    const handleSubMenuPress = (item) => {
+        console.log('Submenu selected:', item.title);
+        const singleMarkerInfo = MARKERS_DATA.filter(m => m.subItemId === item.id);
+        setActiveMarkers(singleMarkerInfo);
+        toggleMenu(); 
     };
 
     const handleBackToMain = () => {
         animateMenuTransition(() => {
             setCurrentMenu('main');
             setSelectedCategory(null);
-            setActiveMarkers(MARKERS_DATA); // Return all markers on back
+            setActiveMarkers(MARKERS_DATA); 
         });
     };
 
     const menuTranslateX = slideAnim.interpolate({
         inputRange: [0, 1],
-        outputRange: [330, -30], // slide out width
+        outputRange: [330, -30], 
     });
+
+    const showAlert = () => {
+        alert('Aún en desarrollo');
+    };
 
     return (
         <View style={styles.webContainer}>
@@ -134,28 +115,20 @@ export default function WebView() {
             </View>
 
             <View style={styles.uiOverlay} pointerEvents="box-none">
-
-                {/* Fondo clickeable para cerrar el menú en web */}
                 <TouchableWithoutFeedback onPress={menuOpen ? toggleMenu : null}>
                     <Animated.View style={[
                         StyleSheet.absoluteFillObject,
                         {
                             zIndex: 40,
-                            // En PC web suele ser menos invasivo no oscurecer tanto el mapa, pero lo atenuamos un poco
                             backgroundColor: 'rgba(0,0,0,0.1)',
                             opacity: slideAnim,
                         }
                     ]} pointerEvents={menuOpen ? 'auto' : 'none'} />
                 </TouchableWithoutFeedback>
 
-                {/* Animated Menu Panel */}
                 <Animated.View style={[styles.menuPanel, { transform: [{ translateX: menuTranslateX }] }]}>
 
-                    <TouchableOpacity
-                        style={styles.mapButton}
-                        onPress={toggleMenu}
-                        activeOpacity={0.8}
-                    >
+                    <TouchableOpacity style={styles.mapButton} onPress={toggleMenu} activeOpacity={0.8}>
                         <MaterialIcons name="location-on" size={38} color="#002B7F" />
                     </TouchableOpacity>
 
@@ -188,84 +161,22 @@ export default function WebView() {
                         <Text style={styles.headerText}>MAPA USEMISTA</Text>
                     </View>
 
-                    <Animated.ScrollView
-                        style={[styles.menuItems, {
-                            opacity: menuTransitionAnim,
-                            transform: [{
-                                translateX: menuTransitionAnim.interpolate({
-                                    inputRange: [0, 1],
-                                    outputRange: [20, 0] // Pequeño desplazamiento al aparecer
-                                })
-                            }]
-                        }]}
-                        showsVerticalScrollIndicator={false}
-                    >
-                        {currentMenu === 'main' ? (
-                            MENU_DATA.map((item) => (
-                                <MenuItem key={item.id} item={item} onPress={() => handleMenuPress(item)} />
-                            ))
-                        ) : (
-                            <View style={{ width: '100%' }}>
-                                {/* Title Header */}
-                                {selectedCategory && (
-                                    <Animated.View style={{
-                                        alignItems: 'center',
-                                        marginBottom: 20,
-                                        opacity: titleAnim,
-                                        transform: [
-                                            { translateY: titleAnim.interpolate({ inputRange: [0, 1], outputRange: [-20, 0] }) }
-                                        ]
-                                    }}>
-                                        {renderIcon(selectedCategory.iconFamily, selectedCategory.iconName, 40)}
-                                        <Text style={{
-                                            color: 'white',
-                                            fontSize: 22,
-                                            fontWeight: 'bold',
-                                            marginTop: 8,
-                                            marginBottom: 5
-                                        }}>
-                                            {selectedCategory.title}
-                                        </Text>
-                                        <View style={{ height: 2, width: 40, backgroundColor: '#4CA1E7', borderRadius: 1 }} />
-                                    </Animated.View>
-                                )}
+                    <SidebarMenu 
+                        currentMenu={currentMenu}
+                        selectedCategory={selectedCategory}
+                        menuTransitionAnim={menuTransitionAnim}
+                        titleAnim={titleAnim}
+                        onMenuItemSelect={handleMenuPress}
+                        onSubMenuItemSelect={handleSubMenuPress}
+                    />
 
-                                {(() => {
-                                    let data = [];
-                                    if (currentMenu === 'faculties') data = FACULTIES_DATA;
-                                    else if (currentMenu === 'cafeteria') data = CAFETERIA_DATA;
-                                    else if (currentMenu === 'entertainment') data = ENTERTAINMENT_DATA;
+                    <BottomControls 
+                        on3DPress={showAlert} 
+                        onSettingsPress={showAlert} 
+                        style={{ marginTop: 30, marginBottom: 10 }}
+                    />
 
-                                    return data.map((item) => (
-                                        <MenuItem key={item.id} item={item} onPress={() => {
-                                            console.log('Submenu selected:', item.title);
-                                            const singleMarkerInfo = MARKERS_DATA.filter(m => m.subItemId === item.id);
-                                            setActiveMarkers(singleMarkerInfo);
-                                            toggleMenu(); // Cerrar menú después de elegir sub-ícono
-                                        }} />
-                                    ));
-                                })()}
-                            </View>
-                        )}
-                    </Animated.ScrollView>
-
-                    <View style={styles.bottomControls}>
-                        <View style={styles.toggleContainer}>
-                            <TouchableOpacity style={[styles.toggleButton, styles.toggleActive]}>
-                                <MaterialCommunityIcons name="office-building-outline" size={24} color="white" />
-                                <Text style={styles.toggleText}>2D</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={styles.toggleButton}>
-                                <MaterialCommunityIcons name="cube-outline" size={24} color="white" />
-                                <Text style={styles.toggleText}>3D</Text>
-                            </TouchableOpacity>
-                        </View>
-                        <TouchableOpacity style={styles.settingsButton}>
-                            <Ionicons name="settings-sharp" size={28} color="white" />
-                        </TouchableOpacity>
-                    </View>
                 </Animated.View>
-
             </View>
 
             <StatusBar style="auto" />

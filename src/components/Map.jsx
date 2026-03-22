@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Image } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
-import Svg, { Path, G } from 'react-native-svg';
+
 
 const INITIAL_REGION = {
     latitude: 10.4912244,
@@ -10,23 +10,38 @@ const INITIAL_REGION = {
     longitudeDelta: 0.0035,
 };
 
+const MARKER_IMAGES = {
+    'f1': require('../assets/markers/f1.png'),
+    'f2': require('../assets/markers/f2.png'),
+    'f3': require('../assets/markers/f3.png'),
+    'f4': require('../assets/markers/f4.png'),
+    'f5': require('../assets/markers/f5.png'),
+    'f19': require('../assets/markers/f19.png'), // Default fallback
+    'a1': require('../assets/markers/a1.png'),
+    'c1': require('../assets/markers/c1.png'),
+    'c2': require('../assets/markers/c2.png'),
+    'c3': require('../assets/markers/c3.png'),
+    'c4': require('../assets/markers/c4.png'),
+    'c5': require('../assets/markers/c5.png'),
+    'c6': require('../assets/markers/c6.png'),
+    'e1': require('../assets/markers/e1.png'),
+    'e2': require('../assets/markers/e2.png'),
+    'e3': require('../assets/markers/e3.png'),
+    'm1': require('../assets/markers/m1.png'),
+    'b1': require('../assets/markers/b1.png'),
+    'ee1': require('../assets/markers/ee1.png'),
+};
+
 export default function Map({ markers = [], focusRegion = null, selectedMarkerId = null, onMarkerPress }) {
     const mapRef = useRef(null);
+
     const markerRefs = useRef({});
 
- useEffect(() => {
+    useEffect(() => {
         if (mapRef.current && focusRegion) {
             mapRef.current.animateToRegion(focusRegion, 700);
         }
     }, [focusRegion]);
-
-
-    // Optional: Animate to region when markers change or fit to markers
-    useEffect(() => {
-        if (markers.length > 0 && mapRef.current) {
-            // mapRef.current.fitToCoordinates(markers, { edgePadding: { top: 50, right: 50, bottom: 50, left: 50 }, animated: true });
-        }
-    }, [markers]);
 
     useEffect(() => {
         if (!selectedMarkerId || !mapRef.current) return;
@@ -71,22 +86,19 @@ export default function Map({ markers = [], focusRegion = null, selectedMarkerId
                         coordinate={{ latitude: marker.latitude, longitude: marker.longitude }}
                         title={marker.title}
                         onPress={() => onMarkerPress?.(marker)}
-                    >
-                        <View style={styles.markerTouchArea}>
-                            <Svg width="40" height="40" viewBox="0 0 1200 1200" fill={marker.color} stroke="#1E1E1E" strokeWidth="20">
-                                <G id="SVGRepo_iconCarrier">
-                                    <Path d="M600,0C350.178,0,147.656,202.521,147.656,452.344 c0,83.547,16.353,169.837,63.281,232.031L600,1200l389.062-515.625c42.625-56.49,63.281-156.356,63.281-232.031 C1052.344,202.521,849.822,0,600,0z M600,261.987c105.116,0,190.356,85.241,190.356,190.356C790.356,557.46,705.116,642.7,600,642.7 s-190.356-85.24-190.356-190.356S494.884,261.987,600,261.987z" />
-                                </G>
-                            </Svg>
-                        </View>
-                    </Marker>
+                        anchor={{ x: 0.5, y: 0.5 }}
+                        image={MARKER_IMAGES[marker.subItemId] || MARKER_IMAGES['f19']}
+                    />
                 ))}
             </MapView>
         </View>
     );
+
 }
 
 const styles = StyleSheet.create({
+// ... rest of styles
+
     container: {
         flex: 1,
     },
@@ -94,12 +106,5 @@ const styles = StyleSheet.create({
         flex: 1,
         width: '100%',
         height: '100%',
-    },
-    markerTouchArea: {
-        width: 56,
-        height: 56,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'transparent',
     },
 });
