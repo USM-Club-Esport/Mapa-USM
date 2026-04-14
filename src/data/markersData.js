@@ -1,0 +1,45 @@
+// Dummy map markers reflecting `MENU_DATA` sections
+// Center point context: 10.4912244, -66.7805869
+
+// Color Map:
+// 1 Facultades: blue
+// 2 Administracion: lightblue
+// 3 Cafeteria: green
+// 4 Entretenimiento: orange
+// 5 Medico: red
+// 6 Biblioteca: yellow
+// 7 Espacio de Eventos: purple
+
+export const MARKERS_DATA = [
+    // Facultades (id: '1')
+    { id: 'm1', subItemId: 'f1', categoryId: '1', title: 'Ciencias Económicas y Sociales', color: 'blue', latitude: 10.4905, longitude: -66.7815 },
+    { id: 'm2', subItemId: 'f2', categoryId: '1', title: 'Derecho', color: 'blue', latitude: 10.4910, longitude: -66.7820 },
+    { id: 'm3', subItemId: 'f3', categoryId: '1', title: 'Estudios Internacionales', color: 'blue', latitude: 10.4915, longitude: -66.7818 },
+    { id: 'm4', subItemId: 'f4', categoryId: '1', title: 'Ingeniería y Arquitectura', color: 'blue', latitude: 10.4920, longitude: -66.7800 },
+    { id: 'm5', subItemId: 'f5', categoryId: '1', title: 'Farmacia', color: 'blue', latitude: 10.4902, longitude: -66.7795 },
+
+    // Administración (id: '2', no submenu yet)
+    { id: 'm6', subItemId: 'a1', categoryId: '2', title: 'Rectorado y Control de Estudios', color: 'lightblue', latitude: 10.4912, longitude: -66.7805 },
+
+    // Cafetería (id: '3')
+    { id: 'm7', subItemId: 'c1', categoryId: '3', title: 'Mesas Verdes', color: 'green', latitude: 10.4908, longitude: -66.7810 },
+    { id: 'm8', subItemId: 'c2', categoryId: '3', title: 'Pobretin', color: 'green', latitude: 10.4918, longitude: -66.7812 },
+    { id: 'm9', subItemId: 'c3', categoryId: '3', title: 'Poma', color: 'green', latitude: 10.4925, longitude: -66.7805 },
+    { id: 'm10', subItemId: 'c4', categoryId: '3', title: 'Feria', color: 'green', latitude: 10.4900, longitude: -66.7825 },
+    { id: 'm11', subItemId: 'c5', categoryId: '3', title: 'Corner', color: 'green', latitude: 10.4914, longitude: -66.7790 },
+    { id: 'm12', subItemId: 'c6', categoryId: '3', title: 'Usemito', color: 'green', latitude: 10.4905, longitude: -66.7801 },
+
+    // Entretenimiento (id: '4')
+    { id: 'm13', subItemId: 'e1', categoryId: '4', title: 'Canchas Deportivas', color: 'orange', latitude: 10.4895, longitude: -66.7830 },
+    { id: 'm14', subItemId: 'e2', categoryId: '4', title: 'Padelvomito', color: 'orange', latitude: 10.4890, longitude: -66.7820 },
+    { id: 'm15', subItemId: 'e3', categoryId: '4', title: 'Mesas de Ping Pong', color: 'orange', latitude: 10.4898, longitude: -66.7815 },
+
+    // Médico (id: '5', no submenu yet)
+    { id: 'm16', subItemId: 'm1', categoryId: '5', title: 'Servicio Médico', color: 'red', latitude: 10.4930, longitude: -66.7811 },
+
+    // Biblioteca (id: '6', no submenu yet)
+    { id: 'm17', subItemId: 'b1', categoryId: '6', title: 'Biblioteca Central', color: 'yellow', latitude: 10.4922, longitude: -66.7792 },
+
+    // Espacio de Eventos (id: '7', no submenu yet)
+    { id: 'm18', subItemId: 'ee1', categoryId: '7', title: 'Auditorio', color: 'purple', latitude: 10.4935, longitude: -66.7798 },
+];

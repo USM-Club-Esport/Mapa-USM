@@ -4,8 +4,8 @@ import { useRef, useState, useEffect } from 'react';
 import { MaterialIcons, FontAwesome5, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { styles, DRAWER_HEIGHT } from '../styles/MobileViewStyles';
 import { MENU_DATA, FACULTIES_DATA, CAFETERIA_DATA, ENTERTAINMENT_DATA } from '../data/menuData';
-
-const imgMap = "https://www.figma.com/api/mcp/asset/1d8b71c8-52a7-4067-8fa5-75d51b43247a";
+import { MARKERS_DATA } from '../data/markersData';
+import Map from './Map';
 
 const renderIcon = (family, name, size) => {
     switch (family) {
@@ -34,6 +34,7 @@ export default function MobileView() {
     const [menuOpen, setMenuOpen] = useState(false);
     const [currentMenu, setCurrentMenu] = useState('main'); // 'main' | 'faculties'
     const [selectedCategory, setSelectedCategory] = useState(null);
+    const [activeMarkers, setActiveMarkers] = useState(MARKERS_DATA);
 
     // Empezamos ocultos abajo del todo
     const slideAnim = useRef(new Animated.Value(0)).current;
@@ -51,10 +52,12 @@ export default function MobileView() {
             setCurrentMenu('main');
             setSelectedCategory(null);
             menuTransitionAnim.setValue(1);
+            setActiveMarkers(MARKERS_DATA);
         } else {
             setCurrentMenu('main');
             setSelectedCategory(null);
             menuTransitionAnim.setValue(1);
+            setActiveMarkers(MARKERS_DATA);
         }
 
         Animated.spring(slideAnim, {
@@ -94,6 +97,10 @@ export default function MobileView() {
                     setCurrentMenu('entertainment');
                 }
 
+                // Filter markers by category
+                const filtered = MARKERS_DATA.filter(m => m.categoryId === item.id);
+                setActiveMarkers(filtered);
+
                 // Iniciar animación del título
                 titleAnim.setValue(0);
                 Animated.timing(titleAnim, {
@@ -104,8 +111,11 @@ export default function MobileView() {
                 }).start();
             });
         } else {
-            console.log('Selected:', item.title);
-            // Aquí iría la lógica de navegación futura
+            console.log('Selected Main Item:', item.title);
+            // Si es un ítem principal sin submenú (Ej. Biblioteca), filtramos esos marcadores
+            const filtered = MARKERS_DATA.filter(m => m.categoryId === item.id);
+            setActiveMarkers(filtered);
+            toggleMenu(); // Opcional: Cerrar el menú al seleccionar
         }
     };
 
@@ -114,6 +124,7 @@ export default function MobileView() {
             animateMenuTransition(() => {
                 setCurrentMenu('main');
                 setSelectedCategory(null);
+                setActiveMarkers(MARKERS_DATA); // Return all markers on back
             });
         }
     };
@@ -156,11 +167,7 @@ export default function MobileView() {
     return (
         <View style={styles.mobileContainer}>
             <View style={styles.mapContainer}>
-                <Image
-                    style={styles.fullImage}
-                    source={{ uri: imgMap }}
-                    resizeMode="cover"
-                />
+                <Map markers={activeMarkers} />
             </View>
 
             <View style={styles.uiOverlay} pointerEvents="box-none">
@@ -259,7 +266,12 @@ export default function MobileView() {
                                     else if (currentMenu === 'entertainment') data = ENTERTAINMENT_DATA;
 
                                     return data.map((item) => (
-                                        <MenuItem key={item.id} item={item} onPress={() => console.log('Submenu:', item.title)} />
+                                        <MenuItem key={item.id} item={item} onPress={() => {
+                                            console.log('Submenu selected:', item.title);
+                                            const singleMarkerInfo = MARKERS_DATA.filter(m => m.subItemId === item.id);
+                                            setActiveMarkers(singleMarkerInfo);
+                                            toggleMenu(); // Cerrar menú después de elegir sub-ícono para ver el mapa
+                                        }} />
                                     ));
                                 })()}
                             </View>
