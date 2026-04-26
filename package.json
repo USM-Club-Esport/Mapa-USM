@@ -34,7 +34,7 @@
     "react-native-reanimated": "~4.1.1",
     "react-native-svg": "15.12.1",
     "react-native-web": "^0.21.0",
-    "react-native-worklets": "^0.8.0",
+    "react-native-worklets": "^0.5.1",
     "three": "^0.166.1"
   },
   "private": true,
