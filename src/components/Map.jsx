@@ -6,7 +6,7 @@ import MapView, { Marker } from 'react-native-maps';
 const INITIAL_REGION = {
     latitude: 10.4912244,
     longitude: -66.7805869,
-    latitudeDelta: 0.0035,
+    latitudeDelta: 0.0035,   // zoom normal (cuando no hay nada seleccionado)
     longitudeDelta: 0.0035,
 };
 
@@ -32,7 +32,7 @@ const MARKER_IMAGES = {
     'ee1': require('../assets/markers/ee1.png'),
 };
 
-export default function Map({ markers = [], focusRegion = null, selectedMarkerId = null, onMarkerPress }) {
+export default function Map({ markers = [], focusRegion = null, selectedMarkerId = null, isLegendExpanded = false, onMarkerPress }) {
     const mapRef = useRef(null);
 
     const markerRefs = useRef({});
@@ -44,28 +44,39 @@ export default function Map({ markers = [], focusRegion = null, selectedMarkerId
     }, [focusRegion]);
 
     useEffect(() => {
-        if (!selectedMarkerId || !mapRef.current) return;
+        if (!mapRef.current) return;
+
+        // Si se deseleccionó (selectedMarkerId es null), volvemos al zoom normal
+        if (!selectedMarkerId) {
+            mapRef.current.animateToRegion(INITIAL_REGION, 600);
+            return;
+        }
 
         const marker = markers.find((item) => item.id === selectedMarkerId);
         if (!marker) return;
 
+        // Si la leyenda se expande (direcciones/departamentos), movemos el mapa más al sur
+        // para que el punto suba. Si está colapsada, lo centramos normal (offset = 0).
+        const LATITUDE_OFFSET = isLegendExpanded ? 0.00065 : 0;
+
         mapRef.current.animateToRegion(
             {
-                latitude: marker.latitude,
+                latitude: marker.latitude - LATITUDE_OFFSET, // centro ajustado
                 longitude: marker.longitude,
-                latitudeDelta: 0.0025,
-                longitudeDelta: 0.0025,
+                latitudeDelta: 0.0012,
+                longitudeDelta: 0.0012,
             },
             500
         );
 
+        // Muestra el callout (globo de título) del marcador después del zoom
         setTimeout(() => {
             const markerRef = markerRefs.current[selectedMarkerId];
-            if (markerRef && markerRef.showCallout) {
-                markerRef.showCallout();
+            if (markerRef && markerRef.showCallout && !isLegendExpanded) {
+                // markerRef.showCallout();
             }
         }, 550);
-    }, [selectedMarkerId, markers]);
+    }, [selectedMarkerId, markers, isLegendExpanded]);
 
     return (
         <View style={styles.container}>

@@ -11,16 +11,17 @@ import { getRegionWithMostNodes } from '../utils/mapCalculations';
 import { BottomControls } from './ui/BottomControls';
 import { MapLegend } from './mobile/MapLegend';
 import { SidebarMenu } from './mobile/SidebarMenu';
+import { SearchBar } from './mobile/SearchBar';
 
 export default function MobileView() {
     const [menuOpen, setMenuOpen] = useState(false);
-    const [currentMenu, setCurrentMenu] = useState('main'); 
+    const [currentMenu, setCurrentMenu] = useState('main');
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [activeMarkers, setActiveMarkers] = useState(MARKERS_DATA);
     const [selectedMarkerId, setSelectedMarkerId] = useState(null);
-
     const [selectedMarker, setSelectedMarker] = useState(null);
-    
+    const [isLegendExpanded, setIsLegendExpanded] = useState(false);
+
     const slideAnim = useRef(new Animated.Value(0)).current;
     const titleAnim = useRef(new Animated.Value(0)).current;
     const menuTransitionAnim = useRef(new Animated.Value(1)).current;
@@ -142,7 +143,7 @@ export default function MobileView() {
                 setSelectedMarkerId(null);
                 setSelectedMarker(null);
             }
-            toggleMenu(); 
+            toggleMenu();
         }
     };
 
@@ -155,7 +156,7 @@ export default function MobileView() {
             setSelectedMarkerId(null);
             setSelectedMarker(null);
         }
-        toggleMenu(); 
+        toggleMenu();
     };
 
     const handleBackToMain = () => {
@@ -167,6 +168,48 @@ export default function MobileView() {
                 setSelectedMarkerId(null);
                 setSelectedMarker(null);
             });
+        }
+    };
+
+    const handleSearch = (text) => {
+        const query = text.toLowerCase().trim();
+        if (!query) {
+            handleClearSearch();
+            return;
+        }
+
+        const firstDigitMatch = query.match(/\d/);
+        const firstDigit = firstDigitMatch ? firstDigitMatch[0] : null;
+
+        const filtered = MARKERS_DATA.filter(marker => {
+            // Coincidencia con nombre del sitio
+            if (marker.title && marker.title.toLowerCase().includes(query)) return true;
+            
+            // Coincidencia con nombre de departamentos
+            if (marker.departments && marker.departments.some(dep => dep.toLowerCase().includes(query))) return true;
+
+            // Coincidencia con primer dígito de un módulo
+            if (firstDigit && marker.modules && marker.modules.includes(firstDigit)) return true;
+
+            return false;
+        });
+
+        setActiveMarkers(filtered);
+        
+        if (filtered.length === 1) {
+            selectMarker(filtered[0]);
+        } else {
+            setSelectedMarkerId(null);
+            setSelectedMarker(null);
+        }
+    };
+
+    const handleClearSearch = () => {
+        if (currentMenu !== 'main' && selectedCategory) {
+            const filtered = MARKERS_DATA.filter(m => m.categoryId === selectedCategory.id);
+            setActiveMarkers(filtered);
+        } else {
+            setActiveMarkers(MARKERS_DATA);
         }
     };
 
@@ -205,6 +248,7 @@ export default function MobileView() {
                     markers={activeMarkers}
                     focusRegion={focusRegion}
                     selectedMarkerId={selectedMarkerId}
+                    isLegendExpanded={isLegendExpanded}
                     onMarkerPress={(marker) => selectMarker(marker)}
                 />
             </View>
@@ -227,27 +271,48 @@ export default function MobileView() {
                             opacity: buttonOpacity,
                             zIndex: 1300,
                             position: 'absolute',
-                            top: 24,
+                            top: 45,
                             left: 16,
-                            height: 90,
-                            justifyContent: 'center',
+                            right: 16,
+                            height: 48,
+                            flexDirection: 'row',
+                            alignItems: 'center',
                         },
-                        { transform: [{ scale: buttonScale }] },
                     ]}
                     pointerEvents={menuOpen ? 'none' : 'auto'}
                 >
-                    <TouchableOpacity
-                        style={styles.mapButton}
-                        onPress={toggleMenu}
-                        onPressIn={handleButtonPressIn}
-                        onPressOut={handleButtonPressOut}
-                        activeOpacity={0.85}
-                    >
-                        <MaterialIcons name="menu" size={30} color="white" />
-                    </TouchableOpacity>
+                    <Animated.View style={{ transform: [{ scale: buttonScale }] }}>
+                        <TouchableOpacity
+                            style={{
+                                width: 48,
+                                height: 48,
+                                borderRadius: 24,
+                                backgroundColor: 'white',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                shadowColor: '#000',
+                                shadowOpacity: 0.15,
+                                shadowOffset: { width: 0, height: 4 },
+                                shadowRadius: 8,
+                                elevation: 5,
+                            }}
+                            onPress={toggleMenu}
+                            onPressIn={handleButtonPressIn}
+                            onPressOut={handleButtonPressOut}
+                            activeOpacity={0.85}
+                        >
+                            <MaterialIcons name="menu" size={28} color="rgba(2, 6, 18)" />
+                        </TouchableOpacity>
+                    </Animated.View>
+
+                    <SearchBar onSearch={handleSearch} onClear={handleClearSearch} />
                 </Animated.View>
 
-                <MapLegend selectedMarker={selectedMarker} onClose={clearSelectedMarker} />
+                <MapLegend 
+                    selectedMarker={selectedMarker} 
+                    onClose={clearSelectedMarker} 
+                    onExpandChange={setIsLegendExpanded}
+                />
 
                 <Animated.View
                     style={[
@@ -294,7 +359,7 @@ export default function MobileView() {
                         <Text style={styles.headerText}>MAPA USEMISTA</Text>
                     </View>
 
-                    <SidebarMenu 
+                    <SidebarMenu
                         currentMenu={currentMenu}
                         selectedCategory={selectedCategory}
                         menuTransitionAnim={menuTransitionAnim}
@@ -303,9 +368,9 @@ export default function MobileView() {
                         onSubMenuItemSelect={handleSubMenuPress}
                     />
 
-                    <BottomControls 
-                        on3DPress={showAlert} 
-                        onSettingsPress={showAlert} 
+                    <BottomControls
+                        on3DPress={showAlert}
+                        onSettingsPress={showAlert}
                         style={{ position: 'absolute', bottom: 24, left: 20, right: 20, zIndex: 1000 }}
                     />
                 </Animated.View>
