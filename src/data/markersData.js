@@ -10,6 +10,22 @@
 // 6 Biblioteca: yellow
 // 7 Espacio de Eventos: purple
 
+/**
+ * Representa un Punto de Interés (POI) en el mapa 2D.
+ * @typedef {Object} Marker
+ * @property {string} id - Identificador único del marcador (ej. 'm1').
+ * @property {string} subItemId - ID del sub-ítem en menuData.js (ej. 'f1').
+ * @property {string} categoryId - ID de la categoría principal en menuData.js (ej. '1').
+ * @property {string} title - Nombre del lugar.
+ * @property {string} color - Color representativo del marcador (ej. 'blue', 'green').
+ * @property {number} latitude - Latitud geográfica.
+ * @property {number} longitude - Longitud geográfica.
+ * @property {string} address - Dirección o ubicación dentro del edificio.
+ * @property {string[]} departments - Lista de departamentos, salas o direcciones.
+ * @property {string[]} modules - Lista de módulos asociados al lugar.
+ */
+
+/** @type {Marker[]} */
 export const MARKERS_DATA = [
     // Facultades (id: '1')
     {

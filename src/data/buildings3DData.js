@@ -1,3 +1,14 @@
+/**
+ * Representa un edificio renderizado en la vista 3D.
+ * @typedef {Object} Edificio3D
+ * @property {string} id - Nombre o identificador del edificio.
+ * @property {string} path - Coordenadas del perímetro en formato SVG path.
+ * @property {number} height - Altura de la extrusión 3D.
+ * @property {string} color - Color del edificio en formato hexadecimal.
+ * @property {number} opacity - Opacidad del material (0 a 1).
+ */
+
+/** @type {Edificio3D[]} */
 export const BUILDINGS_3D_DATA = [
     {
         id: "Facultad de Ingeniería y Arquitectura",
@@ -71,6 +82,11 @@ export const BUILDINGS_3D_DATA = [
     }
 ];
 
+/**
+ * Convierte una cadena de path SVG en un array de coordenadas [x, y].
+ * @param {string} pathStr - Cadena con comandos SVG (M, Z, etc.).
+ * @returns {number[][]} Array de pares [x, y] que cierra el polígono.
+ */
 export const parseSvgPathToCoords = (pathStr) => {
     // Quita las letras (M, Z, etc.), hace trim, y separa por espacios
     const raw = pathStr.replace(/[MZC]/g, '').trim().split(/\s+/);

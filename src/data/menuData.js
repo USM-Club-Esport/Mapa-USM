@@ -1,3 +1,14 @@
+/**
+ * Representa un ítem del menú lateral o de un submenú.
+ * @typedef {Object} MenuItem
+ * @property {string} id - Identificador único (ej. '1', 'f1', 'c1').
+ * @property {string} title - Texto visible en el menú.
+ * @property {string} iconFamily - Familia de iconos de @expo/vector-icons (ej. 'FontAwesome5', 'MaterialIcons').
+ * @property {string} iconName - Nombre exacto del icono dentro de su familia.
+ * @property {number} size - Tamaño del icono en píxeles.
+ */
+
+/** @type {MenuItem[]} */
 export const MENU_DATA = [
     { id: '1', title: 'Facultades', iconFamily: 'FontAwesome5', iconName: 'graduation-cap', size: 28 },
     { id: '2', title: 'Administración', iconFamily: 'FontAwesome5', iconName: 'university', size: 28 },
@@ -8,6 +19,7 @@ export const MENU_DATA = [
     { id: '7', title: 'Espacio de Eventos', iconFamily: 'MaterialIcons', iconName: 'stadium', size: 28 },
 ];
 
+/** @type {MenuItem[]} */
 export const FACULTIES_DATA = [
     { id: 'f1', title: 'Ciencias Económicas y Sociales', iconFamily: 'FontAwesome5', iconName: 'chart-line', size: 24 },
     { id: 'f2', title: 'Derecho', iconFamily: 'FontAwesome5', iconName: 'balance-scale', size: 24 },
@@ -16,6 +28,7 @@ export const FACULTIES_DATA = [
     { id: 'f5', title: 'Farmacia', iconFamily: 'FontAwesome5', iconName: 'prescription-bottle-alt', size: 24 },
 ];
 
+/** @type {MenuItem[]} */
 export const CAFETERIA_DATA = [
     { id: 'c1', title: 'Mesas Verdes', iconFamily: 'MaterialCommunityIcons', iconName: 'table-furniture', size: 24 },
     { id: 'c2', title: 'Pobretin', iconFamily: 'Ionicons', iconName: 'fast-food-outline', size: 24 },
@@ -25,6 +38,7 @@ export const CAFETERIA_DATA = [
     { id: 'c6', title: 'Usemito', iconFamily: 'MaterialCommunityIcons', iconName: 'ice-cream', size: 24 },
 ];
 
+/** @type {MenuItem[]} */
 export const ENTERTAINMENT_DATA = [
     { id: 'e1', title: 'Canchas', iconFamily: 'MaterialIcons', iconName: 'sports-soccer', size: 24 },
     { id: 'e2', title: 'Padelvomito y Pickenosequecosa', iconFamily: 'MaterialCommunityIcons', iconName: 'tennis', size: 24 },

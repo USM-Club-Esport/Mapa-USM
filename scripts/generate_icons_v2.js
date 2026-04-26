@@ -1,3 +1,14 @@
+/**
+ * Script de generación de marcadores PNG para React Native Maps.
+ * Dado que Android con la nueva arquitectura Fabric presenta bugs de recorte
+ * (clipping) al usar vistas personalizadas, pre-generamos los iconos como
+ * imágenes estáticas de 90x90 px.
+ *
+ * Este script descarga vectores desde la API de Iconify y los renderiza a PNG
+ * usando Sharp. No debe incluirse 'sharp' en las dependencias de la app;
+ * instalarlo solo localmente con --no-save.
+ */
+
 const sharp = require('sharp');
 const fs = require('fs');
 const path = require('path');
