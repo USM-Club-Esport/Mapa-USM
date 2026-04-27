@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { StyleSheet, View, Image } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
+import UserLocationMarker from './UserLocationMarker';
 
 
 const INITIAL_REGION = {
@@ -32,7 +33,7 @@ const MARKER_IMAGES = {
     'ee1': require('../assets/markers/ee1.png'),
 };
 
-export default function Map({ markers = [], focusRegion = null, selectedMarkerId = null, isLegendExpanded = false, onMarkerPress }) {
+export default function Map({ markers = [], focusRegion = null, selectedMarkerId = null, isLegendExpanded = false, centerTarget = null, onMarkerPress, onUserLocationChange, onUserPermissionChange }) {
     const mapRef = useRef(null);
 
     const markerRefs = useRef({});
@@ -78,13 +79,27 @@ export default function Map({ markers = [], focusRegion = null, selectedMarkerId
         }, 550);
     }, [selectedMarkerId, markers, isLegendExpanded]);
 
+    useEffect(() => {
+        if (!mapRef.current || !centerTarget) return;
+
+        mapRef.current.animateToRegion(
+            {
+                latitude: centerTarget.latitude,
+                longitude: centerTarget.longitude,
+                latitudeDelta: 0.0015,
+                longitudeDelta: 0.0015,
+            },
+            500
+        );
+    }, [centerTarget]);
+
     return (
         <View style={styles.container}>
             <MapView
                 ref={mapRef}
                 style={styles.map}
                 initialRegion={INITIAL_REGION}
-                showsUserLocation={true}
+                showsUserLocation={false}
             >
                 {markers.map((marker) => (
                     <Marker
@@ -101,6 +116,10 @@ export default function Map({ markers = [], focusRegion = null, selectedMarkerId
                         image={MARKER_IMAGES[marker.subItemId] || MARKER_IMAGES['f19']}
                     />
                 ))}
+                <UserLocationMarker
+                    onLocationChange={onUserLocationChange}
+                    onPermissionChange={onUserPermissionChange}
+                />
             </MapView>
         </View>
     );

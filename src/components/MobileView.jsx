@@ -12,6 +12,7 @@ import { BottomControls } from './ui/BottomControls';
 import { MapLegend } from './mobile/MapLegend';
 import { SidebarMenu } from './mobile/SidebarMenu';
 import { SearchBar } from './mobile/SearchBar';
+import { CenterLocationButton } from './ui/CenterLocationButton';
 
 export default function MobileView() {
     const [menuOpen, setMenuOpen] = useState(false);
@@ -21,6 +22,10 @@ export default function MobileView() {
     const [selectedMarkerId, setSelectedMarkerId] = useState(null);
     const [selectedMarker, setSelectedMarker] = useState(null);
     const [isLegendExpanded, setIsLegendExpanded] = useState(false);
+    const [userLocation, setUserLocation] = useState(null);
+    const [hasLocationPermission, setHasLocationPermission] = useState(false);
+    const [isFirstLocation, setIsFirstLocation] = useState(true);
+    const [mapCenterTarget, setMapCenterTarget] = useState(null);
 
     const slideAnim = useRef(new Animated.Value(0)).current;
     const titleAnim = useRef(new Animated.Value(0)).current;
@@ -249,7 +254,16 @@ export default function MobileView() {
                     focusRegion={focusRegion}
                     selectedMarkerId={selectedMarkerId}
                     isLegendExpanded={isLegendExpanded}
+                    centerTarget={mapCenterTarget}
                     onMarkerPress={(marker) => selectMarker(marker)}
+                    onUserLocationChange={(coords) => {
+                        setUserLocation(coords);
+                        if (isFirstLocation && coords) {
+                            setMapCenterTarget({ ...coords, timestamp: Date.now() });
+                            setIsFirstLocation(false);
+                        }
+                    }}
+                    onUserPermissionChange={setHasLocationPermission}
                 />
             </View>
 
@@ -308,10 +322,19 @@ export default function MobileView() {
                     <SearchBar onSearch={handleSearch} onClear={handleClearSearch} />
                 </Animated.View>
 
-                <MapLegend 
-                    selectedMarker={selectedMarker} 
-                    onClose={clearSelectedMarker} 
+                <MapLegend
+                    selectedMarker={selectedMarker}
+                    onClose={clearSelectedMarker}
                     onExpandChange={setIsLegendExpanded}
+                />
+
+                <CenterLocationButton
+                    isActive={!!userLocation && hasLocationPermission}
+                    onPress={() => {
+                        if (userLocation) {
+                            setMapCenterTarget({ ...userLocation, timestamp: Date.now() });
+                        }
+                    }}
                 />
 
                 <Animated.View
