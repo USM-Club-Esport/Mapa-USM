@@ -12,7 +12,7 @@ import { BottomControls } from './ui/BottomControls';
 import { MapLegend } from './mobile/MapLegend';
 import { SidebarMenu } from './mobile/SidebarMenu';
 import { SearchBar } from './mobile/SearchBar';
-import { CenterLocationButton } from './ui/CenterLocationButton';
+import CenterLocationButton from './ui/CenterLocationButton';
 
 export default function MobileView() {
     const [menuOpen, setMenuOpen] = useState(false);
