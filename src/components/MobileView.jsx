@@ -1,5 +1,15 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Image, TouchableOpacity, Animated, Platform, TouchableWithoutFeedback, BackHandler, Alert } from 'react-native';
+import {
+    StyleSheet,
+    Text,
+    View,
+    Image,
+    TouchableOpacity,
+    Animated,
+    TouchableWithoutFeedback,
+    BackHandler,
+    Alert,
+} from 'react-native';
 import { useRef, useState, useEffect, useMemo } from 'react';
 import { MaterialIcons } from '@expo/vector-icons';
 import { styles } from '../styles/MobileViewStyles';
@@ -122,7 +132,7 @@ export default function MobileView() {
                 else if (item.title === 'Cafetería') setCurrentMenu('cafeteria');
                 else if (item.title === 'Entretenimiento') setCurrentMenu('entertainment');
 
-                const filtered = MARKERS_DATA.filter(m => m.categoryId === item.id);
+                const filtered = MARKERS_DATA.filter((m) => m.categoryId === item.id);
                 setActiveMarkers(filtered);
 
                 if (filtered.length === 1) selectMarker(filtered[0]);
@@ -136,11 +146,11 @@ export default function MobileView() {
                     toValue: 1,
                     duration: 400,
                     useNativeDriver: true,
-                    delay: 100
+                    delay: 100,
                 }).start();
             });
         } else {
-            const filtered = MARKERS_DATA.filter(m => m.categoryId === item.id);
+            const filtered = MARKERS_DATA.filter((m) => m.categoryId === item.id);
             setActiveMarkers(filtered);
 
             if (filtered.length === 1) selectMarker(filtered[0]);
@@ -153,7 +163,7 @@ export default function MobileView() {
     };
 
     const handleSubMenuPress = (item) => {
-        const singleMarkerInfo = MARKERS_DATA.filter(m => m.subItemId === item.id);
+        const singleMarkerInfo = MARKERS_DATA.filter((m) => m.subItemId === item.id);
         setActiveMarkers(singleMarkerInfo);
 
         if (singleMarkerInfo.length > 0) selectMarker(singleMarkerInfo[0]);
@@ -186,12 +196,12 @@ export default function MobileView() {
         const firstDigitMatch = query.match(/\d/);
         const firstDigit = firstDigitMatch ? firstDigitMatch[0] : null;
 
-        const filtered = MARKERS_DATA.filter(marker => {
+        const filtered = MARKERS_DATA.filter((marker) => {
             // Coincidencia con nombre del sitio
             if (marker.title && marker.title.toLowerCase().includes(query)) return true;
-            
+
             // Coincidencia con nombre de departamentos
-            if (marker.departments && marker.departments.some(dep => dep.toLowerCase().includes(query))) return true;
+            if (marker.departments && marker.departments.some((dep) => dep.toLowerCase().includes(query))) return true;
 
             // Coincidencia con primer dígito de un módulo
             if (firstDigit && marker.modules && marker.modules.includes(firstDigit)) return true;
@@ -200,7 +210,7 @@ export default function MobileView() {
         });
 
         setActiveMarkers(filtered);
-        
+
         if (filtered.length === 1) {
             selectMarker(filtered[0]);
         } else {
@@ -211,7 +221,7 @@ export default function MobileView() {
 
     const handleClearSearch = () => {
         if (currentMenu !== 'main' && selectedCategory) {
-            const filtered = MARKERS_DATA.filter(m => m.categoryId === selectedCategory.id);
+            const filtered = MARKERS_DATA.filter((m) => m.categoryId === selectedCategory.id);
             setActiveMarkers(filtered);
         } else {
             setActiveMarkers(MARKERS_DATA);
@@ -232,7 +242,7 @@ export default function MobileView() {
             return false;
         };
 
-        const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction);
+        const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
         return () => backHandler.remove();
     }, [menuOpen, currentMenu]);
 
@@ -269,14 +279,17 @@ export default function MobileView() {
 
             <View style={styles.uiOverlay} pointerEvents="box-none">
                 <TouchableWithoutFeedback onPress={menuOpen ? toggleMenu : null}>
-                    <Animated.View style={[
-                        StyleSheet.absoluteFillObject,
-                        {
-                            backgroundColor: 'rgba(0,0,0,0.3)',
-                            zIndex: 40,
-                            opacity: slideAnim
-                        }
-                    ]} pointerEvents={menuOpen ? 'auto' : 'none'} />
+                    <Animated.View
+                        style={[
+                            StyleSheet.absoluteFillObject,
+                            {
+                                backgroundColor: 'rgba(0,0,0,0.3)',
+                                zIndex: 40,
+                                opacity: slideAnim,
+                            },
+                        ]}
+                        pointerEvents={menuOpen ? 'auto' : 'none'}
+                    />
                 </TouchableWithoutFeedback>
 
                 <Animated.View

@@ -1,0 +1,11 @@
+node_modules
+.expo
+web-build
+dist
+*.png
+*.jpg
+*.gif
+*.svg
+*.ico
+package-lock.json
+pnpm-lock.yaml

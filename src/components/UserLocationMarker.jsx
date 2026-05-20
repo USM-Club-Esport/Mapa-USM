@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Marker, Circle } from 'react-native-maps';
 import * as Location from 'expo-location';
@@ -20,7 +20,7 @@ export default function UserLocationMarker({ onLocationChange, onPermissionChang
             if (!granted) {
                 Alert.alert(
                     'Permiso de ubicación',
-                    'Necesitamos acceso a tu ubicación para mostrar dónde te encuentras en el campus.'
+                    'Necesitamos acceso a tu ubicación para mostrar dónde te encuentras en el campus.',
                 );
                 return;
             }
@@ -40,7 +40,7 @@ export default function UserLocationMarker({ onLocationChange, onPermissionChang
                 (newLocation) => {
                     setLocation(newLocation.coords);
                     onLocationChange?.(newLocation.coords);
-                }
+                },
             );
         };
 

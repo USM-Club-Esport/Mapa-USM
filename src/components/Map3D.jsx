@@ -1,9 +1,8 @@
 import React, { Suspense, useRef, useState, useEffect } from 'react';
 import { View, StyleSheet, Platform } from 'react-native';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { OrbitControls, PerspectiveCamera } from '@react-three/drei';
+import { OrbitControls } from '@react-three/drei';
 import * as THREE from 'three';
-import { Asset } from 'expo-asset';
 import { loadAsync } from 'expo-three';
 import { BUILDINGS_3D_DATA, parseSvgPathToCoords } from '../data/buildings3DData';
 
@@ -15,7 +14,7 @@ const PLANE_HEIGHT = 20;
 const PLANE_WIDTH = PLANE_HEIGHT * SVG_ASPECT;
 
 // Componente reutilizable para cualquier edificio basado en sus coordenadas (SVG path)
-export function ExtrudedBuilding({ coords, height = 0.3, color = "#0004fc", opacity = 1 }) {
+export function ExtrudedBuilding({ coords, height = 0.3, color = '#0004fc', opacity = 1 }) {
     const shape = React.useMemo(() => {
         if (!coords || coords.length === 0) return null;
 
@@ -24,11 +23,11 @@ export function ExtrudedBuilding({ coords, height = 0.3, color = "#0004fc", opac
             // Mapeo: 0 a ancho/alto del SVG -> -Mitad a Mitad del plano
             const px = (x / SVG_WIDTH - 0.5) * PLANE_WIDTH;
             const py = -(y / SVG_HEIGHT - 0.5) * PLANE_HEIGHT;
-            
+
             if (index === 0) s.moveTo(px, py);
             else s.lineTo(px, py);
         });
-        
+
         return s;
     }, [coords]);
 
@@ -36,20 +35,25 @@ export function ExtrudedBuilding({ coords, height = 0.3, color = "#0004fc", opac
 
     return (
         <mesh position={[0, 0, 0.01]} castShadow receiveShadow>
-            <extrudeGeometry args={[shape, { 
-                depth: height, // Altura del edificio provista por prop
-                bevelEnabled: true, 
-                bevelSegments: 2, 
-                steps: 1, 
-                bevelSize: 0.02, 
-                bevelThickness: 0.02 
-            }]} />
-            <meshStandardMaterial 
-                color={color} 
-                opacity={opacity} 
-                transparent={opacity < 1} 
-                roughness={0.1} 
-                metalness={0.5} 
+            <extrudeGeometry
+                args={[
+                    shape,
+                    {
+                        depth: height, // Altura del edificio provista por prop
+                        bevelEnabled: true,
+                        bevelSegments: 2,
+                        steps: 1,
+                        bevelSize: 0.02,
+                        bevelThickness: 0.02,
+                    },
+                ]}
+            />
+            <meshStandardMaterial
+                color={color}
+                opacity={opacity}
+                transparent={opacity < 1}
+                roughness={0.1}
+                metalness={0.5}
             />
         </mesh>
     );
@@ -86,7 +90,7 @@ function MapPlane() {
                     tex.dispose();
                 }
             } catch (error) {
-                console.error("Error loading PNG texture: ", error);
+                console.error('Error loading PNG texture: ', error);
             }
         };
 
@@ -106,16 +110,11 @@ function MapPlane() {
             <planeGeometry args={[PLANE_WIDTH, PLANE_HEIGHT]} />
             {texture ? (
                 <>
-                    <meshStandardMaterial
-                        map={texture}
-                        transparent={true}
-                        side={THREE.DoubleSide}
-                        color="white"
-                    />
-                    
+                    <meshStandardMaterial map={texture} transparent={true} side={THREE.DoubleSide} color="white" />
+
                     {/* Renderizamos todos los edificios desde el JSON */}
-                    {BUILDINGS_3D_DATA.map(building => (
-                        <ExtrudedBuilding 
+                    {BUILDINGS_3D_DATA.map((building) => (
+                        <ExtrudedBuilding
                             key={building.id}
                             coords={parseSvgPathToCoords(building.path)}
                             height={building.height}

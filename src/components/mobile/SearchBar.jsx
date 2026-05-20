@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { View, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 
@@ -70,5 +70,5 @@ const styles = StyleSheet.create({
     clearBtn: {
         padding: 4,
         marginLeft: 4,
-    }
+    },
 });

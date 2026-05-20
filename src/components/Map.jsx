@@ -1,39 +1,47 @@
-import React, { useEffect, useRef } from 'react';
-import { StyleSheet, View, Image } from 'react-native';
+import { useEffect, useRef } from 'react';
+import { StyleSheet, View } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import UserLocationMarker from './UserLocationMarker';
-
 
 const INITIAL_REGION = {
     latitude: 10.4912244,
     longitude: -66.7805869,
-    latitudeDelta: 0.0035,   // zoom normal (cuando no hay nada seleccionado)
+    latitudeDelta: 0.0035, // zoom normal (cuando no hay nada seleccionado)
     longitudeDelta: 0.0035,
 };
 
 const MARKER_IMAGES = {
-    'f1': require('../assets/markers/f1.png'),
-    'f2': require('../assets/markers/f2.png'),
-    'f3': require('../assets/markers/f3.png'),
-    'f4': require('../assets/markers/f4.png'),
-    'f5': require('../assets/markers/f5.png'),
-    'f19': require('../assets/markers/f19.png'), // Default fallback
-    'a1': require('../assets/markers/a1.png'),
-    'c1': require('../assets/markers/c1.png'),
-    'c2': require('../assets/markers/c2.png'),
-    'c3': require('../assets/markers/c3.png'),
-    'c4': require('../assets/markers/c4.png'),
-    'c5': require('../assets/markers/c5.png'),
-    'c6': require('../assets/markers/c6.png'),
-    'e1': require('../assets/markers/e1.png'),
-    'e2': require('../assets/markers/e2.png'),
-    'e3': require('../assets/markers/e3.png'),
-    'm1': require('../assets/markers/m1.png'),
-    'b1': require('../assets/markers/b1.png'),
-    'ee1': require('../assets/markers/ee1.png'),
+    f1: require('../assets/markers/f1.png'),
+    f2: require('../assets/markers/f2.png'),
+    f3: require('../assets/markers/f3.png'),
+    f4: require('../assets/markers/f4.png'),
+    f5: require('../assets/markers/f5.png'),
+    f19: require('../assets/markers/f19.png'), // Default fallback
+    a1: require('../assets/markers/a1.png'),
+    c1: require('../assets/markers/c1.png'),
+    c2: require('../assets/markers/c2.png'),
+    c3: require('../assets/markers/c3.png'),
+    c4: require('../assets/markers/c4.png'),
+    c5: require('../assets/markers/c5.png'),
+    c6: require('../assets/markers/c6.png'),
+    e1: require('../assets/markers/e1.png'),
+    e2: require('../assets/markers/e2.png'),
+    e3: require('../assets/markers/e3.png'),
+    m1: require('../assets/markers/m1.png'),
+    b1: require('../assets/markers/b1.png'),
+    ee1: require('../assets/markers/ee1.png'),
 };
 
-export default function Map({ markers = [], focusRegion = null, selectedMarkerId = null, isLegendExpanded = false, centerTarget = null, onMarkerPress, onUserLocationChange, onUserPermissionChange }) {
+export default function Map({
+    markers = [],
+    focusRegion = null,
+    selectedMarkerId = null,
+    isLegendExpanded = false,
+    centerTarget = null,
+    onMarkerPress,
+    onUserLocationChange,
+    onUserPermissionChange,
+}) {
     const mapRef = useRef(null);
 
     const markerRefs = useRef({});
@@ -67,7 +75,7 @@ export default function Map({ markers = [], focusRegion = null, selectedMarkerId
                 latitudeDelta: 0.0012,
                 longitudeDelta: 0.0012,
             },
-            500
+            500,
         );
 
         // Muestra el callout (globo de título) del marcador después del zoom
@@ -89,18 +97,13 @@ export default function Map({ markers = [], focusRegion = null, selectedMarkerId
                 latitudeDelta: 0.0015,
                 longitudeDelta: 0.0015,
             },
-            500
+            500,
         );
     }, [centerTarget]);
 
     return (
         <View style={styles.container}>
-            <MapView
-                ref={mapRef}
-                style={styles.map}
-                initialRegion={INITIAL_REGION}
-                showsUserLocation={false}
-            >
+            <MapView ref={mapRef} style={styles.map} initialRegion={INITIAL_REGION} showsUserLocation={false}>
                 {markers.map((marker) => (
                     <Marker
                         key={marker.id}
@@ -123,11 +126,10 @@ export default function Map({ markers = [], focusRegion = null, selectedMarkerId
             </MapView>
         </View>
     );
-
 }
 
 const styles = StyleSheet.create({
-// ... rest of styles
+    // ... rest of styles
 
     container: {
         flex: 1,

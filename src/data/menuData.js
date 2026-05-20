@@ -24,7 +24,13 @@ export const FACULTIES_DATA = [
     { id: 'f1', title: 'Ciencias Económicas y Sociales', iconFamily: 'FontAwesome5', iconName: 'chart-line', size: 24 },
     { id: 'f2', title: 'Derecho', iconFamily: 'FontAwesome5', iconName: 'balance-scale', size: 24 },
     { id: 'f3', title: 'Estudios Internacionales', iconFamily: 'FontAwesome5', iconName: 'globe-americas', size: 24 },
-    { id: 'f4', title: 'Ingeniería y Arquitectura', iconFamily: 'FontAwesome5', iconName: 'drafting-compass', size: 24 },
+    {
+        id: 'f4',
+        title: 'Ingeniería y Arquitectura',
+        iconFamily: 'FontAwesome5',
+        iconName: 'drafting-compass',
+        size: 24,
+    },
     { id: 'f5', title: 'Farmacia', iconFamily: 'FontAwesome5', iconName: 'prescription-bottle-alt', size: 24 },
 ];
 
@@ -41,6 +47,12 @@ export const CAFETERIA_DATA = [
 /** @type {MenuItem[]} */
 export const ENTERTAINMENT_DATA = [
     { id: 'e1', title: 'Canchas', iconFamily: 'MaterialIcons', iconName: 'sports-soccer', size: 24 },
-    { id: 'e2', title: 'Padelvomito y Pickenosequecosa', iconFamily: 'MaterialCommunityIcons', iconName: 'tennis', size: 24 },
+    {
+        id: 'e2',
+        title: 'Padelvomito y Pickenosequecosa',
+        iconFamily: 'MaterialCommunityIcons',
+        iconName: 'tennis',
+        size: 24,
+    },
     { id: 'e3', title: 'Mesas Ping Pong', iconFamily: 'MaterialCommunityIcons', iconName: 'table-tennis', size: 24 },
 ];

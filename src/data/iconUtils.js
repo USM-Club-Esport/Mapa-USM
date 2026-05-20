@@ -1,4 +1,3 @@
-import React from 'react';
 import { FontAwesome5, Ionicons, MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { MENU_DATA, FACULTIES_DATA, CAFETERIA_DATA, ENTERTAINMENT_DATA } from './menuData';
 
@@ -10,11 +9,14 @@ import { MENU_DATA, FACULTIES_DATA, CAFETERIA_DATA, ENTERTAINMENT_DATA } from '.
  * @param {string} [color='white'] - Color del icono.
  * @returns {JSX.Element|null} Elemento React del icono o null si la familia no existe.
  */
-export const renderIcon = (family, name, size, color = "white") => {
+export const renderIcon = (family, name, size, color = 'white') => {
     switch (family) {
-        case 'FontAwesome5': return <FontAwesome5 name={name} size={size} color={color} />;
-        case 'Ionicons': return <Ionicons name={name} size={size} color={color} />;
-        case 'MaterialCommunityIcons': return <MaterialCommunityIcons name={name} size={size} color={color} />;
+        case 'FontAwesome5':
+            return <FontAwesome5 name={name} size={size} color={color} />;
+        case 'Ionicons':
+            return <Ionicons name={name} size={size} color={color} />;
+        case 'MaterialCommunityIcons':
+            return <MaterialCommunityIcons name={name} size={size} color={color} />;
         case 'MaterialIcons':
         default:
             return <MaterialIcons name={name} size={size} color={color} />;
@@ -33,17 +35,17 @@ export const renderIcon = (family, name, size, color = "white") => {
  */
 export const getMarkerIcon = (marker) => {
     let subItem;
-    
+
     // Check for sub-item icons first
     switch (marker.categoryId) {
         case '1': // Facultades
-            subItem = FACULTIES_DATA.find(f => f.id === marker.subItemId);
+            subItem = FACULTIES_DATA.find((f) => f.id === marker.subItemId);
             break;
         case '3': // Cafetería
-            subItem = CAFETERIA_DATA.find(c => c.id === marker.subItemId);
+            subItem = CAFETERIA_DATA.find((c) => c.id === marker.subItemId);
             break;
         case '4': // Entretenimiento
-            subItem = ENTERTAINMENT_DATA.find(e => e.id === marker.subItemId);
+            subItem = ENTERTAINMENT_DATA.find((e) => e.id === marker.subItemId);
             break;
         default:
             subItem = null;
@@ -54,7 +56,7 @@ export const getMarkerIcon = (marker) => {
     }
 
     // Fallback to category icon
-    const category = MENU_DATA.find(c => c.id === marker.categoryId);
+    const category = MENU_DATA.find((c) => c.id === marker.categoryId);
     if (category) {
         return { family: category.iconFamily, name: category.iconName };
     }

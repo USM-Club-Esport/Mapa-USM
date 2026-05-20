@@ -26,6 +26,8 @@ Aplicación interactiva desarrollada en **React Native / Expo** para explorar el
 | [@react-three/fiber](https://github.com/pmndrs/react-three-fiber) + [Three.js](https://threejs.org) | Renderizado 3D |
 | [@expo/vector-icons](https://github.com/expo/vector-icons) | Iconografía vectorial |
 | [Sharp](https://sharp.pixelplumbing.com) (solo local) | Generación de assets PNG |
+| [ESLint](https://eslint.org) ~9 | Linter de JavaScript/JSX |
+| [Prettier](https://prettier.io) ~3 | Formateador de código |
 
 ---
 
@@ -65,9 +67,15 @@ Mapa-USM/
 │   │   └── WebViewStyles.js
 │   └── utils/
 │       └── mapCalculations.js # Utilidades geoespaciales
+├── AGENTS.md                # Instrucciones para asistentes IA
 ├── app.json                 # Configuración de Expo
+├── eslint.config.mjs        # Configuración de ESLint (flat config)
 ├── index.js                 # Registro del componente raíz
+├── opencode.json            # Configuración de OpenCode
 ├── package.json
+├── .npmrc                   # Configuración de pnpm
+├── .prettierrc              # Configuración de Prettier
+├── .prettierignore          # Archivos ignorados por Prettier
 └── vercel.json              # Configuración para despliegue en Vercel
 ```
 
@@ -77,25 +85,26 @@ Mapa-USM/
 
 ### 1. Prerrequisitos
 - [Node.js](https://nodejs.org/) (versión LTS recomendada, >= 20).
+- [pnpm](https://pnpm.io/instalacion) (usamos pnpm como gestor de paquetes).
 - Para desarrollo nativo: Expo Go en tu dispositivo o un emulador configurado.
 
 ### 2. Instalación
 
 ```bash
-npm install
+pnpm install
 ```
 
 ### 3. Ejecutar el servidor de desarrollo
 
 ```bash
-npx expo start
+pnpm start
 ```
 
 > **Consejo:** Una vez iniciado el servidor:
 > - Presiona **`w`** para abrir la versión **Web** en tu navegador.
 > - Presiona **`a`** para abrir la aplicación en tu emulador de **Android**.
 > - Escanea el código QR con Expo Go para abrir en un dispositivo físico.
-> - Si tienes problemas de red en WSL, usa: `npx expo start --tunnel`
+> - Si tienes problemas de red en WSL, usa: `pnpm run tunnel`
 
 ---
 
@@ -194,30 +203,52 @@ Los marcadores de la app nativa deben ser imágenes `.png` para evitar el bug de
 
 ```bash
 # Instalar temporalmente
-npm install sharp --no-save
+pnpm add -D sharp
 
 # Generar imágenes
 node scripts/generate_icons_v2.js
 
 # Limpiar
-npm uninstall sharp
+pnpm remove sharp
 ```
 
 Los archivos resultantes se guardan en `src/assets/markers/`.
 
 ---
 
-## 🛠️ Cómo Contribuir
+## 📐 Calidad de Código
 
-### Agregar una nueva locación al mapa
+El proyecto usa **ESLint** + **Prettier** para mantener consistencia en el código.
 
-1. **Opcional — Vista 3D:** Si el edificio debe aparecer en el mapa 3D, añade su polígono en `src/data/buildings3DData.js` con su `path` SVG, `height` y `color`.
-2. **Crear el filtro UI:** Registra el lugar en `src/data/menuData.js` (categoría o submenú correspondiente). Toma nota del `id` que asignes.
-3. **Anclar el marcador geográfico:** Añade la entrada en `src/data/markersData.js`:
-   - Coordenadas exactas (`latitude`, `longitude`).
-   - `categoryId` y `subItemId` que enlacen con el paso anterior.
-   - `address`, `departments` y `modules` según corresponda.
-4. **Generar el ícono nativo:** Si la nueva locación usa un icono que no existe aún en `src/assets/markers/`, actualiza el diccionario `iconMappings` en `scripts/generate_icons_v2.js` y ejecuta el script.
+### Scripts disponibles
+
+| Comando | Descripción |
+|---|---|
+| `pnpm run lint` | Ejecuta ESLint en `src/` |
+| `pnpm run lint:fix` | ESLint con auto-fix |
+| `pnpm run format` | Formatea código con Prettier |
+| `pnpm run format:check` | Verifica formato sin modificar |
+
+### Reglas principales
+
+- Punto y coma obligatorio, comillas simples en JS, dobles en JSX
+- Indentación de 4 espacios, trailing commas en multilínea
+- Reglas de React 19 (JSX transform, hooks)
+- Sin validación de PropTypes (proyecto JS sin TypeScript)
+
+### Pre-commit hooks (Husky)
+
+El proyecto usa **Husky** + **lint-staged** para ejecutar ESLint automáticamente antes de cada commit:
+
+1. Haces `git commit`
+2. Husky intercepta y ejecuta `eslint --fix` solo en los archivos staged
+3. Si hay errores, **el commit se rechaza** y ves qué corregir
+4. Arreglas los errores y vuelves a intentar el commit
+5. Si todo está bien, el commit procede normalmente
+
+> Si necesitas saltar Husky por urgencia: `git commit --no-verify`
+
+---
 
 ### Reportar errores
 

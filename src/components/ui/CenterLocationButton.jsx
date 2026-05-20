@@ -1,4 +1,3 @@
-import React from 'react';
 import { TouchableOpacity, StyleSheet } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 
@@ -9,11 +8,7 @@ export default function CenterLocationButton({ onPress, isActive }) {
             onPress={onPress}
             activeOpacity={0.8}
         >
-            <MaterialIcons
-                name="my-location"
-                size={24}
-                color={isActive ? '#007AFF' : '#9E9E9E'}
-            />
+            <MaterialIcons name="my-location" size={24} color={isActive ? '#007AFF' : '#9E9E9E'} />
         </TouchableOpacity>
     );
 }

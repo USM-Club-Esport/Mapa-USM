@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, Animated, StyleSheet } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 
@@ -12,7 +12,6 @@ import { MaterialIcons } from '@expo/vector-icons';
 //   onExpandChange → notifica cuando se expande o colapsa el texto
 // ─────────────────────────────────────────────
 export const MapLegend = ({ selectedMarker, onClose, onExpandChange }) => {
-
     // Estado para saber qué sección está expandida ('address', 'departments', o null)
     const [expandedSection, setExpandedSection] = useState(null);
 
@@ -59,9 +58,9 @@ export const MapLegend = ({ selectedMarker, onClose, onExpandChange }) => {
 
     // Alterna la sección tocada; si ya está abierta, la cierra
     const toggleSection = (section) => {
-        setExpandedSection(prev => {
+        setExpandedSection((prev) => {
             const next = prev === section ? null : section;
-            
+
             // Comprobamos si la sección que vamos a abrir realmente tiene contenido
             let hasRealContent = false;
             if (next === 'address') {
@@ -74,7 +73,7 @@ export const MapLegend = ({ selectedMarker, onClose, onExpandChange }) => {
             if (onExpandChange) {
                 onExpandChange(next !== null && hasRealContent);
             }
-            
+
             return next;
         });
     };
@@ -93,7 +92,7 @@ export const MapLegend = ({ selectedMarker, onClose, onExpandChange }) => {
                 {
                     opacity: fadeAnim,
                     transform: [{ translateY: cardAnim }],
-                }
+                },
             ]}
         >
             {/* ── ENCABEZADO: nombre del lugar + botón cerrar ── */}
@@ -117,7 +116,6 @@ export const MapLegend = ({ selectedMarker, onClose, onExpandChange }) => {
                 contentContainerStyle={styles.scroll}
                 nestedScrollEnabled={true}
             >
-
                 {/* ── MÓDULOS como chips/pastillas ── */}
                 {hasModules && (
                     <View style={styles.section}>
@@ -153,11 +151,13 @@ export const MapLegend = ({ selectedMarker, onClose, onExpandChange }) => {
                     />
                 </TouchableOpacity>
                 {/* Contenido animado de la dirección */}
-                <Animated.View style={{
-                    overflow: 'hidden',
-                    maxHeight: addressAnim.interpolate({ inputRange: [0, 1], outputRange: [0, 120] }),
-                    opacity: addressAnim,
-                }}>
+                <Animated.View
+                    style={{
+                        overflow: 'hidden',
+                        maxHeight: addressAnim.interpolate({ inputRange: [0, 1], outputRange: [0, 120] }),
+                        opacity: addressAnim,
+                    }}
+                >
                     <Text style={styles.expandContent}>
                         {hasAddress ? selectedMarker.address : 'Dirección no disponible aún.'}
                     </Text>
@@ -180,11 +180,13 @@ export const MapLegend = ({ selectedMarker, onClose, onExpandChange }) => {
                     />
                 </TouchableOpacity>
                 {/* Contenido animado de los departamentos */}
-                <Animated.View style={{
-                    overflow: 'hidden',
-                    maxHeight: departmentsAnim.interpolate({ inputRange: [0, 1], outputRange: [0, 260] }),
-                    opacity: departmentsAnim,
-                }}>
+                <Animated.View
+                    style={{
+                        overflow: 'hidden',
+                        maxHeight: departmentsAnim.interpolate({ inputRange: [0, 1], outputRange: [0, 260] }),
+                        opacity: departmentsAnim,
+                    }}
+                >
                     {hasDepartments ? (
                         selectedMarker.departments.map((dep, index) => (
                             // Cada departamento es una fila con un punto de color
@@ -197,7 +199,6 @@ export const MapLegend = ({ selectedMarker, onClose, onExpandChange }) => {
                         <Text style={styles.expandContent}>No hay departamentos disponibles.</Text>
                     )}
                 </Animated.View>
-
             </ScrollView>
         </Animated.View>
     );
@@ -207,21 +208,20 @@ export const MapLegend = ({ selectedMarker, onClose, onExpandChange }) => {
 // ESTILOS
 // ─────────────────────────────────────────────
 const styles = StyleSheet.create({
-
     // Tarjeta principal: posicionada en la parte inferior
     card: {
         position: 'absolute',
-        left: 0,        // sin margen → llega al borde izquierdo
-        right: 0,       // sin margen → llega al borde derecho
-        bottom: 0,      // pegada al fondo de la pantalla
+        left: 0, // sin margen → llega al borde izquierdo
+        right: 0, // sin margen → llega al borde derecho
+        bottom: 0, // pegada al fondo de la pantalla
         zIndex: 1200,
-        maxHeight: '62%',           // más alto para acomodar el texto grande
+        maxHeight: '62%', // más alto para acomodar el texto grande
         borderRadius: 0,
         borderTopLeftRadius: 22,
         borderTopRightRadius: 22,
-        backgroundColor: '#011E5A',    // azul oscuro USM
+        backgroundColor: '#011E5A', // azul oscuro USM
         borderWidth: 1,
-        borderColor: 'rgba(76, 161, 231, 0.25)',  // borde azul claro suave
+        borderColor: 'rgba(76, 161, 231, 0.25)', // borde azul claro suave
         shadowColor: '#000',
         shadowOpacity: 0.4,
         shadowOffset: { width: 0, height: 8 },
@@ -235,7 +235,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         paddingHorizontal: 18,
-        paddingVertical: 16,   // más espacio vertical en el header
+        paddingVertical: 16, // más espacio vertical en el header
     },
     headerIcon: {
         width: 38,
@@ -249,7 +249,7 @@ const styles = StyleSheet.create({
     title: {
         flex: 1,
         color: 'white',
-        fontSize: 19,          // título más grande
+        fontSize: 19, // título más grande
         fontWeight: '700',
         letterSpacing: 0.3,
     },
@@ -271,7 +271,7 @@ const styles = StyleSheet.create({
     },
 
     scroll: {
-        paddingHorizontal: 18,  // más margen interno
+        paddingHorizontal: 18, // más margen interno
         paddingTop: 12,
         paddingBottom: 18,
     },
@@ -287,7 +287,7 @@ const styles = StyleSheet.create({
     },
     sectionLabel: {
         color: 'rgba(255,255,255,0.85)',
-        fontSize: 16,          // etiquetas de sección más grandes
+        fontSize: 16, // etiquetas de sección más grandes
         fontWeight: '600',
         marginLeft: 8,
         letterSpacing: 0.2,
@@ -296,7 +296,7 @@ const styles = StyleSheet.create({
     // Pastillas/chips de módulos
     chipsRow: {
         flexDirection: 'row',
-        flexWrap: 'wrap',              // van a la línea siguiente si no caben
+        flexWrap: 'wrap', // van a la línea siguiente si no caben
         gap: 8,
     },
     chip: {
@@ -309,7 +309,7 @@ const styles = StyleSheet.create({
     },
     chipText: {
         color: '#9DC6FF',
-        fontSize: 15,          // texto de módulos más grande
+        fontSize: 15, // texto de módulos más grande
         fontWeight: '600',
     },
 
@@ -318,7 +318,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        paddingVertical: 14,   // más espacio entre secciones
+        paddingVertical: 14, // más espacio entre secciones
         borderTopWidth: 1,
         borderTopColor: 'rgba(255,255,255,0.07)',
     },
@@ -330,7 +330,7 @@ const styles = StyleSheet.create({
     // Texto dentro de la sección expandida
     expandContent: {
         color: 'rgba(255,255,255,0.75)',
-        fontSize: 15,          // texto expandido más grande
+        fontSize: 15, // texto expandido más grande
         lineHeight: 24,
         paddingBottom: 12,
         paddingLeft: 6,
@@ -347,14 +347,14 @@ const styles = StyleSheet.create({
         width: 6,
         height: 6,
         borderRadius: 3,
-        backgroundColor: '#4CA1E7',    // punto azul
+        backgroundColor: '#4CA1E7', // punto azul
         marginTop: 7,
         marginRight: 8,
     },
     depText: {
         flex: 1,
         color: 'rgba(255,255,255,0.8)',
-        fontSize: 15,          // texto de departamentos más grande
+        fontSize: 15, // texto de departamentos más grande
         lineHeight: 24,
     },
 });

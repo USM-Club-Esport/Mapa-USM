@@ -1,4 +1,3 @@
-import React from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
 
@@ -40,7 +39,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.3,
         shadowRadius: 6,
         borderWidth: 1,
-        borderColor: 'rgba(255,255,255,0.15)'
+        borderColor: 'rgba(255,255,255,0.15)',
     },
     toggleButton: {
         flexDirection: 'row',
@@ -71,6 +70,6 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.3,
         shadowRadius: 6,
         borderWidth: 1,
-        borderColor: 'rgba(255,255,255,0.15)'
-    }
+        borderColor: 'rgba(255,255,255,0.15)',
+    },
 });

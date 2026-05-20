@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { StyleSheet, View, TouchableOpacity } from 'react-native';
 import { getMarkerIcon } from '../data/iconUtils';
 import { Map as PigeonMap, Overlay, ZoomControl } from 'pigeon-maps';
@@ -11,9 +11,15 @@ const MarkerView = ({ marker, onPress }) => {
     const iconDef = getMarkerIcon(marker);
     let IconComponent = MaterialIcons;
     switch (iconDef.family) {
-        case 'FontAwesome5': IconComponent = FontAwesome5; break;
-        case 'Ionicons': IconComponent = Ionicons; break;
-        case 'MaterialCommunityIcons': IconComponent = MaterialCommunityIcons; break;
+        case 'FontAwesome5':
+            IconComponent = FontAwesome5;
+            break;
+        case 'Ionicons':
+            IconComponent = Ionicons;
+            break;
+        case 'MaterialCommunityIcons':
+            IconComponent = MaterialCommunityIcons;
+            break;
     }
 
     return (
@@ -50,19 +56,19 @@ export default function Map({ markers = [], focusRegion = null, selectedMarkerId
 
     return (
         <View style={styles.container}>
-            <PigeonMap 
-                center={center} 
-                zoom={zoom} 
-                onBoundsChanged={({ center, zoom }) => { 
-                    setCenter(center); 
-                    setZoom(zoom); 
+            <PigeonMap
+                center={center}
+                zoom={zoom}
+                onBoundsChanged={({ center, zoom }) => {
+                    setCenter(center);
+                    setZoom(zoom);
                 }}
             >
                 <ZoomControl />
                 {markers.map((marker) => (
-                    <Overlay 
-                        key={marker.id} 
-                        anchor={[marker.latitude, marker.longitude]} 
+                    <Overlay
+                        key={marker.id}
+                        anchor={[marker.latitude, marker.longitude]}
                         offset={[15, 30]} // offset centers the bottom middle of a 30x30 square
                     >
                         <MarkerView marker={marker} onPress={onMarkerPress} />
@@ -78,7 +84,7 @@ const styles = StyleSheet.create({
         flex: 1,
         height: '100%',
         width: '100%',
-        backgroundColor: '#f0f0f0'
+        backgroundColor: '#f0f0f0',
     },
     markerWrapper: {
         width: 30,
@@ -108,6 +114,5 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         justifyContent: 'center',
         alignItems: 'center',
-    }
+    },
 });
-

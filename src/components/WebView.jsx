@@ -1,14 +1,12 @@
 import { StatusBar } from 'expo-status-bar';
-import { Text, View, Image, TouchableOpacity, Animated, ScrollView, StyleSheet, TouchableWithoutFeedback } from 'react-native';
+import { Text, View, Image, TouchableOpacity, Animated, StyleSheet, TouchableWithoutFeedback } from 'react-native';
 import { styles } from '../styles/WebViewStyles';
 import { useRef, useState } from 'react';
 import { MaterialIcons } from '@expo/vector-icons';
-import { MENU_DATA, FACULTIES_DATA, CAFETERIA_DATA, ENTERTAINMENT_DATA } from '../data/menuData';
 import { MARKERS_DATA } from '../data/markersData';
 import Map from './Map';
 
 // Extracted UI Components
-import { MenuItem } from './ui/MenuItem';
 import { BottomControls } from './ui/BottomControls';
 import { SidebarMenu } from './mobile/SidebarMenu'; // We share this with the mobile side exactly!
 
@@ -17,7 +15,7 @@ export default function WebView() {
     const [currentMenu, setCurrentMenu] = useState('main'); // 'main' | 'faculties'
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [activeMarkers, setActiveMarkers] = useState(MARKERS_DATA);
-    
+
     const slideAnim = useRef(new Animated.Value(0)).current;
     const titleAnim = useRef(new Animated.Value(0)).current;
     const menuTransitionAnim = useRef(new Animated.Value(1)).current;
@@ -65,7 +63,7 @@ export default function WebView() {
                 else if (item.title === 'Cafetería') setCurrentMenu('cafeteria');
                 else if (item.title === 'Entretenimiento') setCurrentMenu('entertainment');
 
-                const filtered = MARKERS_DATA.filter(m => m.categoryId === item.id);
+                const filtered = MARKERS_DATA.filter((m) => m.categoryId === item.id);
                 setActiveMarkers(filtered);
 
                 titleAnim.setValue(0);
@@ -73,35 +71,35 @@ export default function WebView() {
                     toValue: 1,
                     duration: 400,
                     useNativeDriver: true,
-                    delay: 100
+                    delay: 100,
                 }).start();
             });
         } else {
             console.log('Selected Main Item:', item.title);
-            const filtered = MARKERS_DATA.filter(m => m.categoryId === item.id);
+            const filtered = MARKERS_DATA.filter((m) => m.categoryId === item.id);
             setActiveMarkers(filtered);
-            toggleMenu(); 
+            toggleMenu();
         }
     };
 
     const handleSubMenuPress = (item) => {
         console.log('Submenu selected:', item.title);
-        const singleMarkerInfo = MARKERS_DATA.filter(m => m.subItemId === item.id);
+        const singleMarkerInfo = MARKERS_DATA.filter((m) => m.subItemId === item.id);
         setActiveMarkers(singleMarkerInfo);
-        toggleMenu(); 
+        toggleMenu();
     };
 
     const handleBackToMain = () => {
         animateMenuTransition(() => {
             setCurrentMenu('main');
             setSelectedCategory(null);
-            setActiveMarkers(MARKERS_DATA); 
+            setActiveMarkers(MARKERS_DATA);
         });
     };
 
     const menuTranslateX = slideAnim.interpolate({
         inputRange: [0, 1],
-        outputRange: [330, -30], 
+        outputRange: [330, -30],
     });
 
     const showAlert = () => {
@@ -116,18 +114,20 @@ export default function WebView() {
 
             <View style={styles.uiOverlay} pointerEvents="box-none">
                 <TouchableWithoutFeedback onPress={menuOpen ? toggleMenu : null}>
-                    <Animated.View style={[
-                        StyleSheet.absoluteFillObject,
-                        {
-                            zIndex: 40,
-                            backgroundColor: 'rgba(0,0,0,0.1)',
-                            opacity: slideAnim,
-                        }
-                    ]} pointerEvents={menuOpen ? 'auto' : 'none'} />
+                    <Animated.View
+                        style={[
+                            StyleSheet.absoluteFillObject,
+                            {
+                                zIndex: 40,
+                                backgroundColor: 'rgba(0,0,0,0.1)',
+                                opacity: slideAnim,
+                            },
+                        ]}
+                        pointerEvents={menuOpen ? 'auto' : 'none'}
+                    />
                 </TouchableWithoutFeedback>
 
                 <Animated.View style={[styles.menuPanel, { transform: [{ translateX: menuTranslateX }] }]}>
-
                     <TouchableOpacity style={styles.mapButton} onPress={toggleMenu} activeOpacity={0.8}>
                         <MaterialIcons name="location-on" size={38} color="#002B7F" />
                     </TouchableOpacity>
@@ -142,8 +142,8 @@ export default function WebView() {
                                     width: 50,
                                     height: 50,
                                     borderRadius: 25,
-                                    left: -25
-                                }
+                                    left: -25,
+                                },
                             ]}
                             onPress={handleBackToMain}
                             activeOpacity={0.8}
@@ -161,7 +161,7 @@ export default function WebView() {
                         <Text style={styles.headerText}>MAPA USEMISTA</Text>
                     </View>
 
-                    <SidebarMenu 
+                    <SidebarMenu
                         currentMenu={currentMenu}
                         selectedCategory={selectedCategory}
                         menuTransitionAnim={menuTransitionAnim}
@@ -170,12 +170,11 @@ export default function WebView() {
                         onSubMenuItemSelect={handleSubMenuPress}
                     />
 
-                    <BottomControls 
-                        on3DPress={showAlert} 
-                        onSettingsPress={showAlert} 
+                    <BottomControls
+                        on3DPress={showAlert}
+                        onSettingsPress={showAlert}
                         style={{ marginTop: 30, marginBottom: 10 }}
                     />
-
                 </Animated.View>
             </View>
 

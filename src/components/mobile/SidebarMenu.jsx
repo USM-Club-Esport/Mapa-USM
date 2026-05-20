@@ -1,6 +1,4 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, Animated, StyleSheet } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import { View, Text, Animated, StyleSheet } from 'react-native';
 import { MenuItem } from '../ui/MenuItem';
 import { renderIcon } from '../../data/iconUtils';
 import { MENU_DATA, FACULTIES_DATA, CAFETERIA_DATA, ENTERTAINMENT_DATA } from '../../data/menuData';
@@ -11,44 +9,56 @@ export const SidebarMenu = ({
     menuTransitionAnim,
     titleAnim,
     onMenuItemSelect,
-    onSubMenuItemSelect
+    onSubMenuItemSelect,
 }) => {
     return (
         <Animated.ScrollView
-            style={[styles.menuItems, {
-                opacity: menuTransitionAnim,
-                transform: [{
-                    translateX: menuTransitionAnim.interpolate({
-                        inputRange: [0, 1],
-                        outputRange: [20, 0]
-                    })
-                }]
-            }]}
+            style={[
+                styles.menuItems,
+                {
+                    opacity: menuTransitionAnim,
+                    transform: [
+                        {
+                            translateX: menuTransitionAnim.interpolate({
+                                inputRange: [0, 1],
+                                outputRange: [20, 0],
+                            }),
+                        },
+                    ],
+                },
+            ]}
             showsVerticalScrollIndicator={false}
         >
             {currentMenu === 'main' ? (
-                MENU_DATA.map((item) => (
-                    <MenuItem key={item.id} item={item} onPress={() => onMenuItemSelect(item)} />
-                ))
+                MENU_DATA.map((item) => <MenuItem key={item.id} item={item} onPress={() => onMenuItemSelect(item)} />)
             ) : (
                 <View style={{ width: '100%' }}>
                     {selectedCategory && (
-                        <Animated.View style={{
-                            alignItems: 'center',
-                            marginBottom: 20,
-                            opacity: titleAnim,
-                            transform: [
-                                { translateY: titleAnim.interpolate({ inputRange: [0, 1], outputRange: [-20, 0] }) }
-                            ]
-                        }}>
+                        <Animated.View
+                            style={{
+                                alignItems: 'center',
+                                marginBottom: 20,
+                                opacity: titleAnim,
+                                transform: [
+                                    {
+                                        translateY: titleAnim.interpolate({
+                                            inputRange: [0, 1],
+                                            outputRange: [-20, 0],
+                                        }),
+                                    },
+                                ],
+                            }}
+                        >
                             {renderIcon(selectedCategory.iconFamily, selectedCategory.iconName, 40)}
-                            <Text style={{
-                                color: 'white',
-                                fontSize: 22,
-                                fontWeight: 'bold',
-                                marginTop: 8,
-                                marginBottom: 5
-                            }}>
+                            <Text
+                                style={{
+                                    color: 'white',
+                                    fontSize: 22,
+                                    fontWeight: 'bold',
+                                    marginTop: 8,
+                                    marginBottom: 5,
+                                }}
+                            >
                                 {selectedCategory.title}
                             </Text>
                             <View style={{ height: 2, width: 40, backgroundColor: '#4CA1E7', borderRadius: 1 }} />
@@ -75,5 +85,5 @@ const styles = StyleSheet.create({
     menuItems: {
         flex: 1,
         paddingHorizontal: 20,
-    }
+    },
 });
